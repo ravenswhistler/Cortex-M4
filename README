@@ -1,0 +1,12 @@
+This repo is primarily an in-progress demonstration of my playtime with Bare Metal programming,
+specifically with ARM's Cortex-M4 based Microcontrollers.
+
+Subdirectories under this repo contains indepnedent porjects around the Cortex-M4, whiach are subeject to
+the parent's repo license.
+
+List of projects:
+
+	Board				MCU			Porject					Started/Eneded		Status
+
+	WeAct's MiniSTM32F4x1		STM32F401CC		real-time API for peripheral		12-10-2024/NA		Ongoing
+								access and observerabilty
