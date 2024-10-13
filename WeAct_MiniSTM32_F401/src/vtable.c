@@ -1,12 +1,14 @@
 #define		default_isr_alias(IRS) \
 	__attribute__((interrupt, weak, noreturn)) \
 	void IRS(void) { \
-		while(true); \
+		while(1) \
+		{		} \
 	}
 
-extern uint32_t __stack_top__;
+#define	uint32_t unsigned int
+extern	uint32_t __stack_top__;
+
 extern void RESET(void);
-//__attribute__((interrupt, noreturn)) void RESET(void);
 
 //---------------System interrupts--------------//
 default_isr_alias(NMI)				//Non maskable interrupt, Clock Security System
@@ -83,25 +85,25 @@ default_isr_alias(FPU)                          //FPU FPU global interrupt
 default_isr_alias(SPI4)                         //SPI4 SPI 4 global interrupt
 
 
-uint32_t vtable[] __attribute__((section(isr_vector)))= {
-	__stack_top__;
+uint32_t vtable[] __attribute__((section(".isr_vector"))) = {
+	(uint32_t) &__stack_top__,
 	(uint32_t) &RESET,
 	(uint32_t) &NMI,
         (uint32_t) &HardFault,
         (uint32_t) &MemManage,
         (uint32_t) &BusFault,
         (uint32_t) &UsageFault,
-	(uint32_t) 0,				//0x1CUL			
-	(uint32_t) 0,				//0x20UL
-	(uint32_t) 0,				//0x24UL
-	(uint32_t) 0,				//0x28UL
+	(uint32_t) 0UL,				//0x1CUL			
+	(uint32_t) 0UL,				//0x20UL
+	(uint32_t) 0UL,				//0x24UL
+	(uint32_t) 0UL,				//0x28UL
         (uint32_t) &SVCall,
         (uint32_t) &Debug_Monitor,
-	(uint32_t) 0,				//0x34UL
+	(uint32_t) 0UL,				//0x34UL
         (uint32_t) &PendSV,
         (uint32_t) &Systick,
               			
-//----------System interrupts------------//
+/*----------System interrupts------------*/
                                            
         (uint32_t) &WWDG,
         (uint32_t) &EXTI16_PVD,
@@ -158,4 +160,4 @@ uint32_t vtable[] __attribute__((section(isr_vector)))= {
         (uint32_t) &I2C3_ER,
         (uint32_t) &FPU,
         (uint32_t) &SPI4
-}
+};
