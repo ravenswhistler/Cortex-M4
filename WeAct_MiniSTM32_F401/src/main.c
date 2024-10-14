@@ -1,0 +1,21 @@
+#include "types.h"
+#include "GPIO.h"
+
+void main()
+{
+
+	GPIOC->MODER &= ~GPIO_MODER_MASK(13U);
+	GPIOC->MODER |= (1UL << GPIO_MODER_POS(13U));
+
+	GPIOC->OTYPER &= ~GPIO_OTYPER_MASK(13U);
+
+	GPIOC->OSPEEDR &=  ~GPIO_OSPEEDR_MASK(13U);
+
+	GPIOC->PUPDR &=  ~GPIO_PUPDR_MASK(13U);
+
+	//GPIOC->ODR |=  (1UL << GPIO_ODR_POS(13U));
+	GPIOC->ODR &=  ~GPIO_ODR_MASK(13U);
+
+	while(1) { }
+	
+}

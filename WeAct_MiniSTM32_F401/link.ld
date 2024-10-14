@@ -25,7 +25,7 @@ SECTIONS {
 	} > FLASH
 	
 	.data : {
-		__sdata__ = .;		/*__sdata__ designate the start of data section and actually equals to __etext__ but i am aliasing it just out of convienice(mispelled)*/
+		__sdata__ = .;		/*__sdata__ designate the start of data section and actually equals to __etext__ in terms of flashing address but the linker will map this section to RAM (check the .map file)*/
 	    KEEP(*(.data))
 		. = ALIGN(4);
 		__edata__ = .;		/*data section ends here*/
@@ -52,7 +52,6 @@ SECTIONS {
 	 * 	Both sections will contain variables that will hold addresses in RAM from main() because the symbols loaded there are mutable, or inherently non-constant.
 	 * 	
 	 * 	The data section holds values that will be copied in word-size chunks to RAM in the RESET() entry (aka. the reset handler).
-	 * 	Restrictely speaking starutp code isn't necessarily the reset handler, but can hold boot sequence that calls reset handler eventually, and then the handler utlimately calls main().
 	 */
 	    
 

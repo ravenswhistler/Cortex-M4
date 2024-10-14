@@ -86,6 +86,8 @@ default_isr_alias(SPI4)                         //SPI4 SPI 4 global interrupt
 
 
 uint32_t vtable[] __attribute__((section(".isr_vector"))) = {
+
+/*----------System interrupts------------*/
 	(uint32_t) &__stack_top__,
 	(uint32_t) &RESET,
 	(uint32_t) &NMI,
@@ -103,7 +105,7 @@ uint32_t vtable[] __attribute__((section(".isr_vector"))) = {
         (uint32_t) &PendSV,
         (uint32_t) &Systick,
               			
-/*----------System interrupts------------*/
+/*-------Non System interrupts-----------*/
                                            
         (uint32_t) &WWDG,
         (uint32_t) &EXTI16_PVD,
