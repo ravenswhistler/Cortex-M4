@@ -57,6 +57,9 @@ __attribute__((interrupt, naked, noreturn)) void RESET(void)
 	//Wait until it's dead
 	while((RCC->CR & RCC_CR_PLLRDY_MASK) == RCC_CR_PLLRDY_MASK);
 
+	//HSI as Main PLL Input
+	RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLSRC_MASK;
+
 	//Configure PLL's VCO to 2MHz (HSI is 16MHz)
 	RCC->PLLCFGR |= (0x8UL << RCC_PLLCFGR_PLLM_POS) | \
 
@@ -99,5 +102,7 @@ __attribute__((interrupt, naked, noreturn)) void RESET(void)
 	//Do a lot of stuff here
 	
 	Enable_NonMaskable_IRQs();
+	Enable_Priority_IRQs();
+
 	main();
 }

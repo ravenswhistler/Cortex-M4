@@ -7,6 +7,7 @@ ld=arm-none-eabi-ld
 objdump=arm-none-eabi-objdump
 nm=arm-none-eabi-nm
 objcopy=arm-none-eabi-objcopy
+hd=hexdump
 
 SRC="./src/"
 BLD="./build"
@@ -19,7 +20,7 @@ LDFLAGS="-gc-sections -print-memory-usage -static -Map=./build/mapper.map"
 
 rm $BLD/*
 
-$gcc $G_FLAGS $INC -v $COREFLAGS -c ./startup.c -o $BLD/startup.o
+$gcc $G_FLAGS $INC $COREFLAGS -c ./startup.c -o $BLD/startup.o
 $gcc $G_FLAGS $INC $COREFLAGS -c $SRC/vtable.c -o $BLD/vtable.o
 $gcc $G_FLAGS $INC $COREFLAGS -c $SRC/main.c -o $BLD/main.o
 
@@ -27,5 +28,5 @@ $ld $LDFLAGS -T./link.ld -o $BLD/CM4 $BLD/*.o
 
 $objdump -D -S $BLD/CM4 > $BLD/CM4.list
 $objcopy -O binary $BLD/CM4 $BLD/CM4.bin
-
+$hd -Cv $BLD/CM4.bin > $BLD/CM4.hex
 
