@@ -1,5 +1,5 @@
-//#define uint32_t unsigned int
-//#define uint16_t __uint32
+#ifndef _TYPES_
+#define _TYPES_
 #define uint64_t	unsigned long long
 #define uint32_t	unsigned int
 
@@ -15,3 +15,4 @@
 #define 	_O		volatile 	//write-only register
 #define		_IO		volatile	//read-write register
 
+#endif //_TYPES_
