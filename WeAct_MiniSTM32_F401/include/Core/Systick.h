@@ -17,16 +17,6 @@ typedef struct {
 
 } SysTick_Type;
 
-//inline void STK_Enable();
-//inline void STK_Disable();
-//inline void STK_Set_Interrupting(uint32_t TICINT) { STK->CTRL |= };
-//inline void STK_Set_CLKSRC();
-//
-//inline uint32_t STK_Get_Val();
-//inline uint32_t STK_Get_Reload();
-//inline uint32_t STK_Get_Zero();
-
-
 //Enables the counter. When ENABLE is set to 1, the counter loads the RELOAD value from the LOAD register and then counts down. On reaching 0, it sets the COUNTFLAG to 1 and optionally asserts the SysTick depending on the value of TICKINT. It then loads the RELOAD value again, and begins counting.
 //	0: Counter disabled
 //	1: Counter enabled

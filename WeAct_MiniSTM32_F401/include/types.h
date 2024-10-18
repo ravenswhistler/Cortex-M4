@@ -15,4 +15,9 @@
 #define 	_O		volatile 	//write-only register
 #define		_IO		volatile	//read-write register
 
+#define		FALSE		0UL
+#define		false		FALSE
+#define		TRUE		1UL
+#define		true		TRUE
+
 #endif //_TYPES_

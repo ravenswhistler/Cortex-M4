@@ -5,6 +5,7 @@
 
 #define RCC_BASE	(0x40023800U)
 #define RCC		((RCC_Type*)RCC_BASE)
+
 typedef struct {
 	
 	_IO uint32_t CR;				//clock control register
@@ -153,7 +154,7 @@ typedef struct {
 //	111110: PLLM = 62
 //	111111: PLLM = 63
 #define RCC_PLLCFGR_PLLM_POS	(0U)
-#define RCC_PLLCFGR_PLLM_MASK	(0x3FUL << RCC_PLLCFGR_PLLM0_POS)
+#define RCC_PLLCFGR_PLLM_MASK	(0x3FUL << RCC_PLLCFGR_PLLM_POS)
 
 //Main PLL (PLL) multiplication factor for VCO Set and cleared by software to control the multiplication factor of the VCO. These bits can be written only when PLL is disabled. Only half-word and word accesses are allowed to write these bits.
 //Caution: The software has to set these bits correctly to ensure that the VCO output frequency is between 192 and 432 MHz.

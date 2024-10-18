@@ -21,6 +21,7 @@ LDFLAGS="-gc-sections -print-memory-usage -static -Map=./build/mapper.map"
 rm $BLD/*
 
 $gcc $G_FLAGS $INC $COREFLAGS -c ./startup.c -o $BLD/startup.o
+$gcc $G_FLAGS $INC $COREFLAGS -c $SRC/SYSCLK.c -o $BLD/SYSCLK.o
 $gcc $G_FLAGS $INC $COREFLAGS -c $SRC/vtable.c -o $BLD/vtable.o
 $gcc $G_FLAGS $INC $COREFLAGS -c $SRC/main.c -o $BLD/main.o
 
