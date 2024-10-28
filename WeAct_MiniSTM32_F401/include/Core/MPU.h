@@ -1,3 +1,6 @@
+#ifndef MPU_HEADER
+#define MPU_HEADER
+
 #include "types.h"
 
 #define MPU_BASE (0xE000ED90)
@@ -154,3 +157,4 @@ typedef struct {
 #define		MPU_RASR_XN_POS		(28U)
 #define		MPU_RASR_XN_MASK	(1UL << MPU_RASR_XN_POS)
 
+#endif //MPU_HEADER

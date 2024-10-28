@@ -1,0 +1,201 @@
+#ifndef RAV_API
+#define RAV_API
+
+#include "RCC.h"
+#include "GPIO.h"
+#include "NVIC.h"
+#include "MPU.h"
+#include "Systick.h"
+
+static inline uint32_t get_bit_val( volatile uint32_t *reg, uint32_t bit_pos, uint32_t bitmask)
+{
+	return ((uint32_t)((uint32_t)(*reg & bitmask) >> bit_pos));
+}
+
+/*---------------------------CLOCK---------------------------*/
+
+#define HSIFRQ		(16*MHz)
+#define HSEFRQ		(25*MHz)
+#define SYSCLK_MAX_FRQ 	(84*MHz)
+#define PLLMAXFRQ	SYSCLK_MAX_FRQ
+
+#define HSI 0UL
+#define HSE 1UL
+#define PLL 2UL
+
+#define SYSTEM_CLOCK		(RCC->CFGR & RCC_CFGR_SWS_MASK)
+
+#define HSI_CLOCK		(HSI << RCC_CFGR_SWS_POS)
+#define HSE_CLOCK		(HSE << RCC_CFGR_SWS_POS)
+#define PLL_CLOCK		(PLL << RCC_CFGR_SWS_POS)
+
+#define HSI_RDY			((RCC->CR & RCC_CR_HSIRDY_MASK) == RCC_CR_HSIRDY_MASK)
+#define HSI_NOT_RDY		((RCC->CR & RCC_CR_HSIRDY_MASK) != RCC_CR_HSIRDY_MASK)
+
+#define HSE_RDY			((RCC->CR & RCC_CR_HSERDY_MASK) == RCC_CR_HSERDY_MASK)
+#define HSE_NOT_RDY		((RCC->CR & RCC_CR_HSERDY_MASK) != RCC_CR_HSERDY_MASK)
+
+#define PLL_RDY			((RCC->CR & RCC_CR_PLLRDY_MASK) == RCC_CR_PLLRDY_MASK)
+#define PLL_LOCKED		PLL_RDY
+#define PLL_NOT_RDY		((RCC->CR & RCC_CR_PLLRDY_MASK) != RCC_CR_PLLRDY_MASK)
+#define PLL_UNLOCKED		PLL_NOT_RDY
+
+
+#define ENABLE_HSI()		RCC->CR |= RCC_CR_HSION_MASK
+#define DISABLE_HSI()		RCC->CR &= ~RCC_CR_HSION_MASK
+
+#define ENABLE_HSE()		RCC->CR |= RCC_CR_HSEON_MASK
+#define DISABLE_HSE()		RCC->CR &= ~RCC_CR_HSEON_MASK
+
+#define ENABLE_PLL()		RCC->CR |= RCC_CR_PLLON_MASK
+#define DISABLE_PLL()		RCC->CR &= ~RCC_CR_PLLON_MASK
+#define DISABLE_PLLI2S()	RCC->CR &= ~RCC_CR_PLLI2SON_MASK
+
+#define SET_HSI_SYSCLK()	RCC->CFGR &= ~RCC_CFGR_SW_MASK
+#define SET_HSE_SYSCLK()	RCC->CFGR |= HSE << RCC_CFGR_SW_POS
+#define SET_PLL_SYSCLK()	RCC->CFGR |= PLL << RCC_CFGR_SW_POS
+
+#define SET_HSI_PLLSRC()	RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLSRC_MASK
+#define SET_HSE_PLLSRC()	RCC->PLLCFGR |= RCC_PLLCFGR_PLLSRC_MASK
+
+#define CLEAR_PLLCFGR()		RCC->PLLCFGR = 0
+
+#define SET_PLL_MNPQ(m,n,p,q)	RCC->PLLCFGR |= ((m << RCC_PLLCFGR_PLLM_POS) | \
+						(n << RCC_PLLCFGR_PLLN_POS) | \
+						(p << RCC_PLLCFGR_PLLP_POS) | \
+						(q << RCC_PLLCFGR_PLLQ_POS))
+
+#define GET_PLLSRC()		((RCC->PLLCFGR & RCC_PLLCFGR_PLLSRC_MASK) == RCC_PLLCFGR_PLLSRC_MASK)
+
+#define PLLM			((uint32_t)(RCC->PLLCFGR & RCC_PLLCFGR_PLLM_MASK))
+#define PLLN			((uint32_t)((RCC->PLLCFGR & RCC_PLLCFGR_PLLN_MASK) >> (RCC_PLLCFGR_PLLN_POS)))
+
+#define PLLP			(2U + 2*((uint32_t)((RCC->PLLCFGR & RCC_PLLCFGR_PLLP_MASK) >> (RCC_PLLCFGR_PLLP_POS))))
+
+#define PLLQ			((uint32_t)((RCC->PLLCFGR & RCC_PLLCFGR_PLLQ_MASK) >> RCC_PLLCFGR_PLLQ_POS))
+
+#define GET_PLLOUT(PLLSRC)	((PLLSRC/PLLM)*(PLLN/PLLP))
+
+#define MAXOUT_SYSTEM()		RCC->CFGR |= ((0UL << RCC_CFGR_HPRE_POS) | (4UL << RCC_CFGR_PPRE1_POS) | (0UL << RCC_CFGR_PPRE2_POS));
+
+#define	MAXOUT_AHB()		RCC->CFGR |= (0UL << RCC_CFGR_HPRE_POS)
+#define MAXOUT_APB1()		RCC->CFGR |= (0UL << RCC_CFGR_PPRE1_POS)
+#define BISECT_APB1()		RCC->CFGR |= (4UL << RCC_CFGR_PPRE1_POS)
+#define	MAXOUT_APB2()		RCC->CFGR |= (0UL << RCC_CFGR_PPRE2_POS)
+
+#define SET_PPRE1(x)		RCC->CFGR |= (x << RCC_CFGR_PPRE1_POS)
+
+void __set_system_freq(uint32_t frq);
+void __maxout_system_domains(void);
+
+/*---------------------------SYSTICK---------------------------*/
+
+#define	RESET_STK()		STK->CTRL = 0
+
+#define ENABLE_SYSTICK()	STK->CTRL |= STK_CTRL_ENABLE_MASK
+#define DISABLE_SYSTICK()	STK->CTRL &= ~STK_CTRL_ENABLE_MASK
+
+#define	CLEAR_STK_VAL()		STK-VAL = 0
+
+#define IS_CALIB_VAL_EXACT()	((STK->CALIB & STK_CALIB_SKEW_MASK) == STK_CALIB_SKEW_MASK)
+
+#define FAKE_TENMS		(STK->CALIB & STK_CALIB_TENMS_MASK)
+#define ONEMS			FAKE_TENMS
+#define REAL_TENMS		10*ONEMS
+
+#define SET_STK_RELOAD(x)	STK->LOAD = x
+
+#define SET_STK_CLKSRC_AHBdiv8()	STK->CTRL &= ~STK_CTRL_CLKSOURCE_MASK
+#define SET_STK_CLKSRC_HCLK()		STK->CTRL |= STK_CTRL_CLKSOURCE_MASK
+
+#define ENABLE_STK_TICKINT()		STK->CTRL |= STK_CTRL_TICINT_MASK
+#define DISABLE_STK_TICKINT()		STK->CTRL &= ~STK_CTRL_TICINT_MASK
+
+/*---------------------------MPU---------------------------*/
+
+#define ENABLE_MPU()	MPU->CTRL |= MPU_CTRL_ENABLE_MASK
+#define DISABLE_MPU()	MPU->CTRL &= ~MPU_CTRL_ENABLE_MASK
+
+/*---------------------------GPIO---------------------------*/
+
+#define RESET_AHB_PORT_A()	RCC->AHB1RSTR |= RCC_AHB1RSTR_GPIOAEN_MASK
+#define RESET_AHB_PORT_B()	RCC->AHB1RSTR |= RCC_AHB1RSTR_GPIOBEN_MASK
+#define RESET_AHB_PORT_C()	RCC->AHB1RSTR |= RCC_AHB1RSTR_GPIOCEN_MASK
+
+#define ENABLE_AHB_PORT_A()	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN_MASK
+#define ENABLE_AHB_PORT_B()	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN_MASK
+#define ENABLE_AHB_PORT_C()	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN_MASK
+
+#define DISABLE_AHB_PORT_A()	RCC->AHB1ENR &= ~RCC_AHB1ENR_GPIOAEN_MASK
+#define DISABLE_AHB_PORT_B()	RCC->AHB1ENR &= ~RCC_AHB1ENR_GPIOBEN_MASK
+#define DISABLE_AHB_PORT_C()	RCC->AHB1ENR &= ~RCC_AHB1ENR_GPIOCEN_MASK
+
+#define INPUT_MODE		(0U)
+#define OUTPUT_MODE		(1U)
+#define ALTFUNC_MODE		(2U)
+#define ANALOG_MODE		(3U)
+
+#define CLEAR_PORT_A_MODER()	GPIOA->MODER = 0
+#define CLEAR_PORT_B_MODER() 	GPIOB->MODER = 0
+#define CLEAR_PORT_C_MODER() 	GPIOC->MODER = 0
+
+#define SET_PORT_A_PINx_MODE(x,y)	((y == INPUT_MODE) ? (GPIOA->MODER &= ~GPIO_MODER_MASK(x)) : (GPIOA->MODER |= (y << GPIO_MODER_POS(x))))
+#define SET_PORT_B_PINx_MODE(x,y)	((y == INPUT_MODE) ? (GPIOB->MODER &= ~GPIO_MODER_MASK(x)) : (GPIOB->MODER |= (y << GPIO_MODER_POS(x))))
+#define SET_PORT_C_PINx_MODE(x,y)	((y == INPUT_MODE) ? (GPIOC->MODER &= ~GPIO_MODER_MASK(x)) : (GPIOC->MODER |= (y << GPIO_MODER_POS(x))))
+
+#define AF(x)	(x%16)
+#define PORT_B_PIN13_TIM1_CH1N	AF(1)
+
+#define SET_PORT_A_PINx_ALTFUNC(x,y) \
+	((x > 7 ) ? (GPIOA->AFRH |= ( y << GPIO_AFRH_POS(x))) : \
+	 (GPIOA->AFRL |= ( y << GPIO_AFRL_POS(x)))
+
+#define SET_PORT_B_PINx_ALTFUNC(x,y) \
+	((x > 7 ) ? (GPIOB->AFRH |= ( y << GPIO_AFRH_POS(x))) : \
+	 (GPIOB->AFRL |= ( y << GPIO_AFRL_POS(x)))
+
+#define SET_PORT_C_PINx_ALTFUNC(x,y) \
+	((x > 7 ) ? (GPIOC->AFRH |= ( y << GPIO_AFRH_POS(x))) : \
+	 (GPIOC->AFRL |= ( y << GPIO_AFRL_POS(x)))
+
+#define PUSH_PULL_OTYPE		(0U)
+#define OPEN_DRAIN_OTYPE	(1U)
+
+#define SET_PORT_A_PINx_OUTPUT_TYPE(x, y)	((y == PUSH_PULL_OTYPE) ? (GPIOA->OTYPER &= ~GPIO_OTYPER_MASK(x)) : (GPIOA->OTYPER |= GPIO_OTYPER_MASK(x)))
+#define SET_PORT_B_PINx_OUTPUT_TYPE(x, y)	((y == PUSH_PULL_OTYPE) ? (GPIOB->OTYPER &= ~GPIO_OTYPER_MASK(x)) : (GPIOB->OTYPER |= GPIO_OTYPER_MASK(x)))
+#define SET_PORT_C_PINx_OUTPUT_TYPE(x, y)	((y == PUSH_PULL_OTYPE) ? (GPIOC->OTYPER &= ~GPIO_OTYPER_MASK(x)) : (GPIOC->OTYPER |= GPIO_OTYPER_MASK(x)))
+
+#define LOW		(0U)
+#define MEDIUM		(1U)
+#define HIGH		(2U)
+#define VERY_HIGH	(3U)
+
+#define SET_PORT_A_PINx_O_SPEED(x,y)	((y == LOW) ? (GPIOA->OSPEEDR &= ~GPIO_OSPEEDR_MASK(x)) : (GPIOA->OSPEEDR |= (y << GPIO_OSPEEDR_POS(x))))
+#define SET_PORT_B_PINx_O_SPEED(x,y)	((y == LOW) ? (GPIOB->OSPEEDR &= ~GPIO_OSPEEDR_MASK(x)) : (GPIOB->OSPEEDR |= (y << GPIO_OSPEEDR_POS(x))))
+#define SET_PORT_C_PINx_O_SPEED(x,y)	((y == LOW) ? (GPIOC->OSPEEDR &= ~GPIO_OSPEEDR_MASK(x)) : (GPIOC->OSPEEDR |= (y << GPIO_OSPEEDR_POS(x))))
+
+#define NO_PULL_PUSH		(0U)
+#define PULL_UP			(1U)
+#define PUSH_DOWN		(2U)
+
+#define SET_PORT_A_PINx_PUSH_PULL(x,y)	((y == NO_PULL_PUSH) ? (GPIOA->PUPDR &= ~GPIO_PUPDR_MASK(x)) : (GPIOA->PUPDR |= (y << GPIO_PUPDR_POS(x))))
+#define SET_PORT_B_PINx_PUSH_PULL(x,y)	((y == NO_PULL_PUSH) ? (GPIOB->PUPDR &= ~GPIO_PUPDR_MASK(x)) : (GPIOB->PUPDR |= (y << GPIO_PUPDR_POS(x))))
+#define SET_PORT_C_PINx_PUSH_PULL(x,y)	((y == NO_PULL_PUSH) ? (GPIOC->PUPDR &= ~GPIO_PUPDR_MASK(x)) : (GPIOC->PUPDR |= (y << GPIO_PUPDR_POS(x))))
+
+#define ENABLE_PORT_A_PINx_O_DATA(x)	(GPIOA->ODR |= GPIO_ODR_MASK(x))
+#define ENABLE_PORT_B_PINx_O_DATA(x)	(GPIOB->ODR |= GPIO_ODR_MASK(x))
+#define ENABLE_PORT_C_PINx_O_DATA(x)	(GPIOC->ODR |= GPIO_ODR_MASK(x))
+
+#define DISABLE_PORT_A_PINx_O_DATA(x)	(GPIOA->ODR &= ~GPIO_ODR_MASK(x))
+#define DISABLE_PORT_B_PINx_O_DATA(x)   (GPIOB->ODR &= ~GPIO_ODR_MASK(x))
+#define DISABLE_PORT_C_PINx_O_DATA(x)   (GPIOC->ODR &= ~GPIO_ODR_MASK(x))
+
+#define TOGGLE_PORT_A_PINx_O_DATA(x)	(GPIOA->ODR ^= GPIO_ODR_MASK(x))
+#define TOGGLE_PORT_B_PINx_O_DATA(x)    (GPIOB->ODR ^= GPIO_ODR_MASK(x))
+#define TOGGLE_PORT_C_PINx_O_DATA(x)    (GPIOC->ODR ^= GPIO_ODR_MASK(x))
+
+#define RESET_APB2_TIM1()	RCC->APB2RSTR |= RCC_APB2RSTR_TIM1RST_MASK;
+#define ENABLE_APB2_TIM1()	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN_MASK;
+#define DISABLE_APB2_TIM1()	RCC->APB2ENR &= ~RCC_APB2ENR_TIM1EN_MASK;
+
+#endif //RAV_API

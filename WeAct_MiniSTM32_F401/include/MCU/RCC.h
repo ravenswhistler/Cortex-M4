@@ -169,7 +169,7 @@ typedef struct {
 //	...
 //	111111111: PLLN = 511, wrong configuration
 #define RCC_PLLCFGR_PLLN_POS	(6U)
-#define RCC_PLLCFGR_PLLN_MASK	(0x7FUL << RCC_PLLCFGR_PLLN_POS)
+#define RCC_PLLCFGR_PLLN_MASK	(0x1FFUL << RCC_PLLCFGR_PLLN_POS)
 
 //Main PLL (PLL) division factor for main system clock Set and cleared by software to control the frequency of the general PLL output clock. These bits can be written only if PLL is disabled.
 //Caution: The software has to set these bits correctly not to exceed 84 MHz on this domain.

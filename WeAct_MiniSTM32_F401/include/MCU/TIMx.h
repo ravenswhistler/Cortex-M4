@@ -30,20 +30,57 @@
 //	- Break input to put the timer’s output signals in reset state or in a known state.
 
 //APB1:
-#define TIM2_BASE	(0x40000000UL)
-#define TIM3_BASE	(0x40000400UL)
-#define TIM4_BASE	(0x40000800UL)
-#define TIM5_BASE	(0x40000C00UL)
+#define TIM2_BASE	(0x40000000U)
+#define TIM3_BASE	(0x40000400U)
+#define TIM4_BASE	(0x40000800U)
+#define TIM5_BASE	(0x40000C00U)
 
 //APB2:
-#define TIM1_BASE	(0x40010000UL)
+#define TIM1_BASE	(0x40010000U)
 
-#define TIM9_BASE	(0x40014000UL)
+#define TIM9_BASE	(0x40014000U)
 
-#define TIM10_BASE	(0x40014400UL)
-#define TIM11_BASE	(0x40014800UL)
+#define TIM10_BASE	(0x40014400U)
+#define TIM11_BASE	(0x40014800U)
+
+typedef struct {
+
+	_IO uint32_t CR1;
+	_IO uint32_t CR2;
+	_IO uint32_t SMCR;
+	_IO uint32_t DIER;
+	_IO uint32_t SR;
+	_IO uint32_t EGR;
+	_IO uint32_t CCMR1;		//Output Compare OR Input Capture Mode
+	_IO uint32_t CCMR2;		//Output Compare OR Input Capture Mode
+	_IO uint32_t CCER;
+	_IO uint16_t CNT;
+	_IO uint16_t __UNUSED_0;
+	_IO uint16_t PSC;
+	_IO uint16_t __UNUSED_1;
+	_IO uint16_t ARR;
+	_IO uint16_t __UNUSED_2;
+	_IO uint8_t  RCR;
+	_IO uint8_t  __UNUSED_3;
+	_IO uint16_t __UNUSED_4;
+	_IO uint16_t CCR1;
+	_IO uint16_t __UNUSED_5;
+	_IO uint16_t CCR2;
+	_IO uint16_t __UNUSED_6;
+	_IO uint16_t CCR3;
+	_IO uint16_t __UNUSED_7;
+	_IO uint16_t CCR4;
+	_IO uint16_t __UNUSED_8;
+	_IO uint16_t BDTR;
+	_IO uint16_t __UNUSED_9;
+	_IO uint32_t DCR;
+	_IO uint32_t DMAR;
+} TIM1_Type;
+
+#define	TIM1	((TIM1_Type*)TIM1_BASE)
 
 
+#if 0
 typedef struct {
 
 	_IO uint32_t CR1;
@@ -71,7 +108,7 @@ typedef struct {
 #endif
 	_IO uint32_t PSC;
 	_IO uint32_t ARR;
-#ifdef TIM1_t
+#if defined (TIM1_t)
 	_IO uint32_t RCR;
 #else
 	_IO uint32_t __UNUSED_3;
@@ -81,29 +118,31 @@ typedef struct {
 	_I uint32_t __UNUSED_4[6];
 #else
 	_IO uint32_t CCR2;
-	#if defined (TIM9_t)
+#if defined (TIM9_t)
 	_I uint32_t __UNUSED_5[5];
-	#else
+#else
 		_IO uint32_t CCR3;
 		_IO uint32_t CCR4;
-		#ifdef TIM1
+#if defined (TIM1_t)
 			_IO uint32_t BDTR;
-		#elif defined (TIM2_t) || defined (TIM3_t) || defined (TIM4_t) || defined (TIM5_t)
+#else
 			_I uint32_t __UNUSED_6;
-		#endif
+#endif
 		_IO uint32_t DCR;
 		_IO uint32_t DMAR;
-	#endif
+#endif
 #endif
 #if defined (TIM2_t) || defined (TIM5_t) || defined (TIM10_t) || defined (TIM11_t)
 		_IO uint32_t OR;
 #endif
 } TIMx_Type;
 
+#endif
 
-#define TIM1_t
-	#define	TIM1	((TIMx_Type*)TIM1_BASE)
-#undef TIM1_t
+#if 0
+//#define TIM1_t
+//	#define	TIM1	((TIMx_Type*)TIM1_BASE)
+//#undef TIM1_t
 
 #define TIM2_t
 	#define	TIM2	((TIMx_Type*)TIM2_BASE)
@@ -133,8 +172,9 @@ typedef struct {
 	#define	TIM11	((TIMx_Type*)TIM11_BASE)
 #undef TIM11_t
 
+#endif
 
-//ANY THING BELOW THIS LINE SHOULDN'T BE ACCESSED EITHER FOR READ OR WRITE BY ANY THING LESS THAN WORD-WIDE 32-BIT ACCESS
+//ANY THING BELOW THIS LINE SHOUDN'T BE ACCESSED EITHER FOR READ OR WRITE BY ANY THING LESS THAN WORD-WIDE 32-BIT ACCESS
 //
 /*-------------------Control Reg 1-------------------*/
 
@@ -144,8 +184,8 @@ typedef struct {
 //Note:
 //	External clock, gated mode and encoder mode can work only if the CEN bit has been previously set by software.
 //	However trigger mode can set the CEN bit automatically by hardware.
-#define	TIMx_CR1_CEN_POS		(0UL)
-#define	TIMx_CR1_CEN_MASK		(1UL << TIMx_CR1_CEN_POS)
+#define	TIMx_CR1_CEN_POS		(0U)
+#define	TIMx_CR1_CEN_MASK		(1U << TIMx_CR1_CEN_POS)
 
 //UDIS: Update disable
 //	This bit is set and cleared by software to enable/disable UEV event generation.
@@ -157,8 +197,8 @@ typedef struct {
 //
 //	1: UEV disabled. The Update event is not generated, shadow registers keep their value (ARR, PSC, CCRx).
 //	However the counter and the prescaler are reinitialized if the UG bit is set or if a hardware reset is received from the slave mode controller.
-#define	TIMx_CR1_UDIS_POS		(1UL)
-#define	TIMx_CR1_UDIS_MASK		(1UL << TIMx_CR1_UDIS_POS)
+#define	TIMx_CR1_UDIS_POS		(1U)
+#define	TIMx_CR1_UDIS_MASK		(1U << TIMx_CR1_UDIS_POS)
 
 //URS: Update request source
 //	This bit is set and cleared by software to select the UEV event sources.
@@ -168,14 +208,14 @@ typedef struct {
 //		– Update generation through the slave mode controller
 //	
 //	1: Only counter overflow/underflow generates an update interrupt or DMA request if enabled
-#define	TIMx_CR1_URS_POS		(2UL)
-#define	TIMx_CR1_URS_MASK		(2UL << TIMx_CR1_URS_POS)
+#define	TIMx_CR1_URS_POS		(2U)
+#define	TIMx_CR1_URS_MASK		(1U << TIMx_CR1_URS_POS)
 
 //OPM: One pulse mode
 //	0: Counter is not stopped at update event
 //	1: Counter stops counting at the next update event (clearing the bit CEN)
-#define	TIMx_CR1_OPM_POS		(3UL)
-#define	TIMx_CR1_OPM_MASK		(1UL << TIMx_CR1_OPM_POS)
+#define	TIMx_CR1_OPM_POS		(3U)
+#define	TIMx_CR1_OPM_MASK		(1U << TIMx_CR1_OPM_POS)
 
 //DIR: Direction
 //	0: Counter used as upcounter
@@ -183,8 +223,8 @@ typedef struct {
 //
 //Note:
 //	This bit is read only when the timer is configured in Center-aligned mode or Encoder mode.
-#define	TIMx_CR1_DIR_POS		(4UL)
-#define	TIMx_CR1_DIR_MASK		(1UL << TIMx_CR1_DIR_POS)
+#define	TIMx_CR1_DIR_POS		(4U)
+#define	TIMx_CR1_DIR_MASK		(1U << TIMx_CR1_DIR_POS)
 
 //CMS[1:0]: Center-aligned mode selection
 //	00: Edge-aligned mode. The counter counts up or down depending on the direction bit (DIR).
@@ -200,14 +240,14 @@ typedef struct {
 //
 //Note:
 //	It is not allowed to switch from edge-aligned mode to center-aligned mode as long as the counter is enabled (CEN=1)
-#define	TIMx_CR1_CMS_POS		(5UL)
-#define	TIMx_CR1_CMS_MASK		(3UL << TIMx_CR1_CMS_POS)
+#define	TIMx_CR1_CMS_POS		(5U)
+#define	TIMx_CR1_CMS_MASK		(3U << TIMx_CR1_CMS_POS)
 
 //ARPE: Auto-reload preload enable
 //	0: TIMx_ARR register is not buffered
 //	1: TIMx_ARR register is buffered
-#define	TIMx_CR1_ARPE_POS		(7UL)
-#define	TIMx_CR1_ARPE_MASK		(1UL << TIMx_CR1_ARPE_POS)
+#define	TIMx_CR1_ARPE_POS		(7U)
+#define	TIMx_CR1_ARPE_MASK		(1U << TIMx_CR1_ARPE_POS)
 
 //CKD[1:0]: Clock division
 //
@@ -216,8 +256,8 @@ typedef struct {
 //	01: tDTS=2*tCK_INT
 //	10: tDTS=4*tCK_INT
 //	11: Reserved, do not program this value
-#define	TIMx_CR1_CKDE_POS		(8UL)
-#define	TIMx_CR1_CKDE_MASK		(1UL << TIMx_CR1_CKDE_POS)
+#define	TIMx_CR1_CKDE_POS		(8U)
+#define	TIMx_CR1_CKDE_MASK		(3U << TIMx_CR1_CKDE_POS)
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -227,22 +267,22 @@ typedef struct {
 //	1: CCxE, CCxNE and OCxM bits are preloaded, after having been written, they are updated only when a commutation event (COM) occurs (COMG bit set or rising edge detected on TRGI, depending on the CCUS bit).
 //Note:
 //	This bit acts only on channels that have a complementary output.
-#define	TIMx_CR2_CCPC_POS		(0UL)
-#define	TIMx_CR2_CCPC_MASK		(1UL << TIMx_CR2_CCPC_POS)
+#define	TIMx_CR2_CCPC_POS		(0U)
+#define	TIMx_CR2_CCPC_MASK		(1U << TIMx_CR2_CCPC_POS)
 
 //CCUS: Capture/compare control update selection
 //	0: When capture/compare control bits are preloaded (CCPC=1), they are updated by setting the COMG bit only
 //	1: When capture/compare control bits are preloaded (CCPC=1), they are updated by setting the COMG bit or when an rising edge occurs on TRGI
 //Note:
 //	This bit acts only on channels that have a complementary output.
-#define	TIMx_CR2_CCUS_POS		(2UL)
-#define	TIMx_CR2_CCUS_MASK		(1UL << TIMx_CR2_CCUS_POS)
+#define	TIMx_CR2_CCUS_POS		(2U)
+#define	TIMx_CR2_CCUS_MASK		(1U << TIMx_CR2_CCUS_POS)
 
 //CCDS: Capture/compare DMA selection
 //	0: CCx DMA request sent when CCx event occurs
 //	1: CCx DMA requests sent when update event occurs
-#define	TIMx_CR2_CCDS_POS		(3UL)
-#define	TIMx_CR2_CCDS_MASK		(1UL << TIMx_CR2_CCDS_POS)
+#define	TIMx_CR2_CCDS_POS		(3U)
+#define	TIMx_CR2_CCDS_MASK		(1U << TIMx_CR2_CCDS_POS)
 
 //MMS[2:0]: Master mode selection
 //These bits allow to select the information to be sent in master mode to slave timers for synchronization (TRGO). The combination is as follows:
@@ -265,14 +305,14 @@ typedef struct {
 //
 //Note:
 //	The clock of the slave timer and ADC must be enabled prior to receiving events from the master timer, and must not be changed on-the-fly while triggers are received from the master timer.
-#define	TIMx_CR2_MMS_POS		(4UL)
-#define	TIMx_CR2_MMS_MASK		(7UL << TIMx_CR2_MMS_POS)
+#define	TIMx_CR2_MMS_POS		(4U)
+#define	TIMx_CR2_MMS_MASK		(7U << TIMx_CR2_MMS_POS)
 
 //TI1S: TI1 selection
 //	0: The TIMx_CH1 pin is connected to TI1 input
 //	1: The TIMx_CH1, CH2 and CH3 pins are connected to the TI1 input (XOR combination)
-#define	TIMx_CR2_TI1S_POS		(7UL)
-#define	TIMx_CR2_TI1S_MASK		(1UL << TIMx_CR2_TI1S_POS)
+#define	TIMx_CR2_TI1S_POS		(7U)
+#define	TIMx_CR2_TI1S_MASK		(1U << TIMx_CR2_TI1S_POS)
 
 //OIS1: Output Idle state 1 (OC1 output)
 //	0: OC1=0 (after a dead-time if OC1N is implemented) when MOE=0
@@ -280,8 +320,8 @@ typedef struct {
 //
 //Note:
 //	This bit can not be modified as long as LOCK level 1, 2 or 3 has been programmed (LOCK bits in TIMx_BDTR register).
-#define	TIMx_CR2_OIS1_POS		(8UL)
-#define	TIMx_CR2_OIS1_MASK		(1UL << TIMx_CR2_OIS1_POS)
+#define	TIMx_CR2_OIS1_POS		(8U)
+#define	TIMx_CR2_OIS1_MASK		(1U << TIMx_CR2_OIS1_POS)
 
 //OIS1N: Output Idle state 1 (OC1N output)
 //	0: OC1N=0 after a dead-time when MOE=0
@@ -289,29 +329,29 @@ typedef struct {
 //
 //Note:
 //	This bit can not be modified as long as LOCK level 1, 2 or 3 has been programmed (LOCK bits in TIMx_BDTR register).
-#define	TIMx_CR2_OIS1N_POS		(9UL)
-#define	TIMx_CR2_OIS1N_MASK		(1UL << TIMx_CR2_OIS1N_POS)
+#define	TIMx_CR2_OIS1N_POS		(9U)
+#define	TIMx_CR2_OIS1N_MASK		(1U << TIMx_CR2_OIS1N_POS)
 
 
 //OIS2: Output Idle state 2 (OC2 output) refer to OIS1 bit
-#define	TIMx_CR2_OIS2_POS		(10UL)
-#define	TIMx_CR2_OIS2_MASK		(1UL << TIMx_CR2_OIS2_POS)
+#define	TIMx_CR2_OIS2_POS		(10U)
+#define	TIMx_CR2_OIS2_MASK		(1U << TIMx_CR2_OIS2_POS)
 
 //OIS2N: Output Idle state 2 (OC2N output) refer to OIS1N bit
-#define	TIMx_CR2_OIS2N_POS		(11UL)
-#define	TIMx_CR2_OIS2N_MASK		(1UL << TIMx_CR2_OIS2N_POS)
+#define	TIMx_CR2_OIS2N_POS		(11U)
+#define	TIMx_CR2_OIS2N_MASK		(1U << TIMx_CR2_OIS2N_POS)
 
 //OIS2: Output Idle state 3 (OC3 output) refer to OIS1 bit
-#define	TIMx_CR2_OIS3_POS		(12UL)
-#define	TIMx_CR2_OIS3_MASK		(1UL << TIMx_CR2_OIS3_POS)
+#define	TIMx_CR2_OIS3_POS		(12U)
+#define	TIMx_CR2_OIS3_MASK		(1U << TIMx_CR2_OIS3_POS)
 
 //OIS2N: Output Idle state 3 (OC3N output) refer to OIS1N bit
-#define	TIMx_CR2_OIS3N_POS		(13UL)
-#define	TIMx_CR2_OIS3N_MASK		(1UL << TIMx_CR2_OIS3N_POS)
+#define	TIMx_CR2_OIS3N_POS		(13U)
+#define	TIMx_CR2_OIS3N_MASK		(1U << TIMx_CR2_OIS3N_POS)
 
 //OIS2: Output Idle state 4 (OC4 output) refer to OIS1 bit
-#define	TIMx_CR2_OIS3_POS		(14UL)
-#define	TIMx_CR2_OIS3_MASK		(1UL << TIMx_CR2_OIS3_POS)
+#define	TIMx_CR2_OIS4_POS		(14U)
+#define	TIMx_CR2_OIS4_MASK		(1U << TIMx_CR2_OIS4_POS)
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -337,8 +377,8 @@ typedef struct {
 //	The gated mode must not be used if TI1F_ED is selected as the trigger input (TS=’100’). Indeed, TI1F_ED outputs 1 pulse for each transition on TI1F, whereas the gated mode checks the level of the trigger signal.
 //
 //The clock of the slave timer must be enabled prior to receiving events from the master timer, and must not be changed on-the-fly while triggers are received from the master timer.
-#define	TIMx_SMCR_SMS_POS		(0UL)
-#define	TIMx_SMCR_SMS_MASK		(7UL << TIMx_SMCR_SMS_POS)
+#define	TIMx_SMCR_SMS_POS		(0U)
+#define	TIMx_SMCR_SMS_MASK		(7U << TIMx_SMCR_SMS_POS)
 
 //TS[2:0]: Trigger selection
 //	This bit-field selects the trigger input to be used to synchronize the counter.
@@ -356,16 +396,16 @@ typedef struct {
 //	|TIM1	  |	|TIM5_TRGO	|	|TIM2_TRGO	|	|TIM3_TRGO      |       |TIM4_TRGO	|
 //Note:
 //	These bits must be changed only when they are not used (e.g. when SMS=000) to avoid wrong edge detections at the transition.
-#define	TIMx_SMCR_TS_POS		(4UL)
-#define	TIMx_SMCR_TS_MASK		(7UL << TIMx_SMCR_TS_POS)
+#define	TIMx_SMCR_TS_POS		(4U)
+#define	TIMx_SMCR_TS_MASK		(7U << TIMx_SMCR_TS_POS)
 
 //MSM: Master/slave mode
 //	0: No action
 //	1: The effect of an event on the trigger input (TRGI) is delayed to allow a perfect synchronization between the current timer and its slaves (through TRGO).
 //
 //	It is useful if we want to synchronize several timers on a single external event.
-#define	TIMx_SMCR_MSM_POS		(7UL)
-#define	TIMx_SMCR_MSM_MASK		(1UL << TIMx_SMCR_MSM_POS)
+#define	TIMx_SMCR_MSM_POS		(7U)
+#define	TIMx_SMCR_MSM_MASK		(1U << TIMx_SMCR_MSM_POS)
 
 //ETF[3:0]: External trigger filter
 //	This bit-field then defines the frequency used to sample ETRP signal and the length of the digital filter applied to ETRP.
@@ -393,8 +433,8 @@ typedef struct {
 //		1101: fSAMPLING= fDTS/32,	N=5
 //		1110: fSAMPLING= fDTS/32,	N=6
 //		1111: fSAMPLING= fDTS/32,	N=8
-#define	TIMx_SMCR_ETF_POS		(8UL)
-#define	TIMx_SMCR_ETF_MASK		(FUL << TIMx_SMCR_ETF_POS)
+#define	TIMx_SMCR_ETF_POS		(8U)
+#define	TIMx_SMCR_ETF_MASK		(0xFU << TIMx_SMCR_ETF_POS)
 
 //ETPS[1:0]: External trigger prescaler
 //	External trigger signal ETRP frequency must be at most 1/4 of TIMxCLK frequency.
@@ -405,8 +445,8 @@ typedef struct {
 //		10: ETRP frequency divided by 4
 //		11: ETRP frequency divided by 8
 //
-#define	TIMx_SMCR_ETPS_POS		(12UL)
-#define	TIMx_SMCR_ETPS_MASK		(3UL << TIMx_SMCR_ETPS_POS)
+#define	TIMx_SMCR_ETPS_POS		(12U)
+#define	TIMx_SMCR_ETPS_MASK		(3U << TIMx_SMCR_ETPS_POS)
 
 //ECE: External clock enable
 //	This bit enables External clock mode 2.
@@ -422,15 +462,15 @@ typedef struct {
 //		trigger mode.
 //		Nevertheless, TRGI must not be connected to ETRF in this case (TS bits must not be 111).
 //	3: If external clock mode 1 and external clock mode 2 are enabled at the same time, the external clock input is ETRF.
-#define	TIMx_SMCR_ECE_POS		(14UL)
-#define	TIMx_SMCR_ECE_MASK		(1UL << TIMx_SMCR_ECE_POS)
+#define	TIMx_SMCR_ECE_POS		(14U)
+#define	TIMx_SMCR_ECE_MASK		(1U << TIMx_SMCR_ECE_POS)
 
 //ETP: External trigger polarity
 //	This bit selects whether ETR or NOR(ETR) is used for trigger operations
 //		0: ETR is non-inverted, active at high level or rising edge.
 //		1: ETR is inverted, active at low level or falling edge.
-#define	TIMx_SMCR_ETP_POS		(15UL)
-#define	TIMx_SMCR_ETP_MASK		(1UL << TIMx_SMCR_ETP_POS)
+#define	TIMx_SMCR_ETP_POS		(15U)
+#define	TIMx_SMCR_ETP_MASK		(1U << TIMx_SMCR_ETP_POS)
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -439,57 +479,60 @@ typedef struct {
 //UIE: Update interrupt enable
 //	0: Update interrupt disabled
 //	1: Update interrupt enabled
-#define	TIMx_DIER_UIE_POS		(0UL)
-#define	TIMx_DIER_UIE_MASK		(1UL << TIMx_DIER_UIE_POS)
+#define	TIMx_DIER_UIE_POS		(0U)
+#define	TIMx_DIER_UIE_MASK		(1U << TIMx_DIER_UIE_POS)
 
 //CCxIE: Capture/Compare x interrupt enable
 //	0: CCx interrupt disabled
 //	1: CCx interrupt enabled
 //Where (x = 1, 2, 3, or 4)
-#define	TIMx_DIER_CCxIE_POS(x)		(1UL*(x%5))
-#define	TIMx_DIER_CCxIE_MASK(x)		(1UL << TIMx_DIER_CCxIE_POS(x))
+#define	TIMx_DIER_CCxIE_POS		(1U)
+#define	TIMx_DIER_CCxIE_MASK		(1U << TIMx_DIER_CCxIE_POS)
+
+//#define	TIMx_DIER_CCxIE_POS(x)		(1U*(x%5))
+//#define	TIMx_DIER_CCxIE_MASK(x)		(1U << TIMx_DIER_CCxIE_POS(x))
 
 //COMIE: COM interrupt enable
 //	0: COM interrupt disabled
 //	1: COM interrupt enabled
-#define	TIMx_DIER_COMIE_POS		(5UL)
-#define	TIMx_DIER_COMIE_MASK		(1UL << TIMx_DIER_COMIE_POS)
+#define	TIMx_DIER_COMIE_POS		(5U)
+#define	TIMx_DIER_COMIE_MASK		(1U << TIMx_DIER_COMIE_POS)
 
 //TIE: Trigger interrupt enable
 //	0: Trigger interrupt disabled
 //	1: Trigger interrupt enabled
-#define	TIMx_DIER_TIE_POS		(6UL)
-#define	TIMx_DIER_TIE_MASK		(1UL << TIMx_DIER_TIE_POS)
+#define	TIMx_DIER_TIE_POS		(6U)
+#define	TIMx_DIER_TIE_MASK		(1U << TIMx_DIER_TIE_POS)
 
 //BIE: Break interrupt enable
 //	0: Break interrupt disabled
 //	1: Break interrupt enabled
-#define	TIMx_DIER_BIE_POS		(7UL)
-#define	TIMx_DIER_BIE_MASK		(1UL << TIMx_DIER_BIE_POS)
+#define	TIMx_DIER_BIE_POS		(7U)
+#define	TIMx_DIER_BIE_MASK		(1U << TIMx_DIER_BIE_POS)
 
 //UDE: Update DMA request enable
 //	0: Update DMA request disabled
 //	1: Update DMA request enabled
-#define	TIMx_DIER_UDE_POS		(8UL)
-#define	TIMx_DIER_UDE_MASK		(1UL << TIMx_DIER_UDE_POS)
+#define	TIMx_DIER_UDE_POS		(8U)
+#define	TIMx_DIER_UDE_MASK		(1U << TIMx_DIER_UDE_POS)
 
 //CCxDE: Capture/Compare x DMA request enable
 //	0: CCx DMA request disabled
 //	1: CCx DMA request enabled
-#define	TIMx_DIER_CCxDE_POS(x)		(9UL + ( (x-1) % 3) )		//TODO: Error Prone
-#define	TIMx_DIER_CCxDE_MASK(x)		(1UL << TIMx_DIER_CCxDE_POS(x))
+#define	TIMx_DIER_CCxDE_POS(x)		(9U + ( (x-1) % 3) )		//TODO: Error Prone
+#define	TIMx_DIER_CCxDE_MASK(x)		(1U << TIMx_DIER_CCxDE_POS(x))
 
 //COMDE: COM DMA request enable
 //	0: COM DMA request disabled
 //	1: COM DMA request enabled
-#define	TIMx_DIER_COMDE_POS		(13UL)
-#define	TIMx_DIER_COMDE_MASK		(1UL << TIMx_DIER_COMDE_POS)
+#define	TIMx_DIER_COMDE_POS		(13U)
+#define	TIMx_DIER_COMDE_MASK		(1U << TIMx_DIER_COMDE_POS)
 
 //TDE: Trigger DMA request enable
 //	0: Trigger DMA request disabled
 //	1: Trigger DMA request enabled
-#define	TIMx_DIER_TDE_POS		(14UL)
-#define	TIMx_DIER_TDE_MASK		(1UL << TIMx_DIER_TDE_POS)
+#define	TIMx_DIER_TDE_POS		(14U)
+#define	TIMx_DIER_TDE_MASK		(1U << TIMx_DIER_TDE_POS)
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -503,8 +546,8 @@ typedef struct {
 //		– At overflow or underflow regarding the repetition counter value (update if repetition counter = 0) and if the UDIS=0 in the TIMx_CR1 register.
 //		– When CNT is reinitialized by software using the UG bit in TIMx_EGR register, if URS=0 and UDIS=0 in the TIMx_CR1 register.
 //		– When CNT is reinitialized by a trigger event (refer to TIM1 slave mode control register (TIMx_SMCR)), if URS=0 and UDIS=0 in the TIMx_CR1 register.
-#define	TIMx_SR_UIF_POS			(0UL)
-#define	TIMx_SR_UIF_MASK		(1UL << TIMx_SR_UIF_POS)
+#define	TIMx_SR_UIF_POS			(0U)
+#define	TIMx_SR_UIF_MASK		(1U << TIMx_SR_UIF_POS)
 
 //CCxIF: Capture/Compare x interrupt flag
 //          If channel CCx is configured as output:
@@ -520,16 +563,16 @@ typedef struct {
 //
 //          	0: No input capture occurred
 //          	1: The counter value has been captured in TIMx_CCR1 register (An edge has been detected on IC1 which matches the selected polarity)
-#define	TIMx_SR_CCxIF_POS(x)		(1UL * (x%5))			//TODO: Error Prone
-#define	TIMx_SR_CCxIF_MASK(x)		(1UL << TIMx_SR_CCxIF_POS(x))
+#define	TIMx_SR_CCxIF_POS(x)		(1U * (x%5))			//TODO: Error Prone
+#define	TIMx_SR_CCxIF_MASK(x)		(1U << TIMx_SR_CCxIF_POS(x))
 
 //COMIF: COM interrupt flag
 //	This flag is set by hardware on COM event (when Capture/compare Control bits - CCxE, CCxNE, OCxM - have been updated). It is cleared by software.
 //
 //		0: No COM event occurred.
 //		1: COM interrupt pending.
-#define	TIMx_SR_COMIF_POS		(5UL)
-#define	TIMx_SR_COMIF_MASK		(1UL << TIMx_SR_COMIF_POS)
+#define	TIMx_SR_COMIF_POS		(5U)
+#define	TIMx_SR_COMIF_MASK		(1U << TIMx_SR_COMIF_POS)
 
 //TIF: Trigger interrupt flag
 //	This flag is set by hardware on trigger event (active edge detected on TRGI input when the slave mode controller is enabled in all modes but gated mode.
@@ -537,24 +580,24 @@ typedef struct {
 //
 //            0: No trigger event occurred.
 //            1: Trigger interrupt pending.
-#define	TIMx_SR_TIF_POS			(6UL)
-#define	TIMx_SR_TIF_MASK		(1UL << TIMx_SR_TIF_POS)
+#define	TIMx_SR_TIF_POS			(6U)
+#define	TIMx_SR_TIF_MASK		(1U << TIMx_SR_TIF_POS)
 
 
 //BIF: Break interrupt flag
 //	This flag is set by hardware as soon as the break input goes active. It can be cleared by software if the break input is not active.
 //		0: No break event occurred.
 //		1: An active level has been detected on the break input.
-#define	TIMx_SR_BIF_POS			(7UL)
-#define	TIMx_SR_BIF_MASK		(1UL << TIMx_SR_BIF_POS)
+#define	TIMx_SR_BIF_POS			(7U)
+#define	TIMx_SR_BIF_MASK		(1U << TIMx_SR_BIF_POS)
 
 
 //CCxOF: Capture/Compare x overcapture flag
 //	This flag is set by hardware only when the corresponding channel is configured in input capture mode. It is cleared by software by writing it to ‘0’.
 //		0: No overcapture has been detected.
 //		1: The counter value has been captured in TIMx_CCRx register while CCxIF flag was already set
-#define	TIMx_SR_CCxOF_POS(x)		(9UL + (x))			//TODO: Error Prone
-#define	TIMx_SR_CCxOF_MASK(x)		(1UL << TIMx_SR_CCxOF_POS(x))
+#define	TIMx_SR_CCxOF_POS(x)		(9U + (x))			//TODO: Error Prone
+#define	TIMx_SR_CCxOF_MASK(x)		(1U << TIMx_SR_CCxOF_POS(x))
 
 /*+++++++++++++++++++++++++++++++++++++++*/
 
@@ -565,8 +608,8 @@ typedef struct {
 //		0: No action
 //		1: Reinitialize the counter and generates an update of the registers. Note that the prescaler counter is cleared too (anyway the prescaler ratio is not affected).
 //		   The counter is cleared if the center-aligned mode is selected or if DIR=0 (upcounting), else it takes the auto-reload value (TIMx_ARR) if DIR=1 (downcounting).
-#define	TIMx_EGR_UG_POS			(0UL)
-#define	TIMx_EGR_UG_MASK		(1UL << TIMx_EGR_UG_POS)
+#define	TIMx_EGR_UG_POS			(0U)
+#define	TIMx_EGR_UG_MASK		(1U << TIMx_EGR_UG_POS)
 
 //CCxG: Capture/Compare x generation
 //	This bit is set by software in order to generate an event, it is automatically cleared by hardware.
@@ -579,8 +622,8 @@ typedef struct {
 //          		If channel CCx is configured as input:
 //          			The current value of the counter is captured in TIMx_CCRx register. The CCxIF flag is set, the corresponding interrupt or DMA request is sent if enabled.
 //				The CCxOF flag is set if the CCxIF flag was already high.
-#define	TIMx_EGR_CCxG_POS(x)		(1UL*(x%5))			//TODO:Error Prone
-#define	TIMx_EGR_CCxG_MASK(x)		(1UL << TIMx_EGR_CCxG_POS(x))
+#define	TIMx_EGR_CCxG_POS(x)		(1U*(x%5))			//TODO:Error Prone
+#define	TIMx_EGR_CCxG_MASK(x)		(1U << TIMx_EGR_CCxG_POS(x))
 
 //COMG: Capture/Compare control update generation
 //	This bit can be set by software, it is automatically cleared by hardware
@@ -588,22 +631,22 @@ typedef struct {
 //		1: When CCPC bit is set, it allows to update CCxE, CCxNE and OCxM bits
 //Note:
 //	This bit acts only on channels having a complementary output.
-#define	TIMx_EGR_COMG_POS		(5UL)
-#define	TIMx_EGR_COMG_MASK		(1UL << TIMx_EGR_COMG_POS)
+#define	TIMx_EGR_COMG_POS		(5U)
+#define	TIMx_EGR_COMG_MASK		(1U << TIMx_EGR_COMG_POS)
 
 //TG: Trigger generation
 //	This bit is set by software in order to generate an event, it is automatically cleared by hardware.
 //		0: No action
 //		1: The TIF flag is set in TIMx_SR register. Related interrupt or DMA transfer can occur if enabled.
-#define	TIMx_EGR_TG_POS			(6UL)
-#define	TIMx_EGR_TG_MASK		(1UL << TIMx_EGR_TG_POS)
+#define	TIMx_EGR_TG_POS			(6U)
+#define	TIMx_EGR_TG_MASK		(1U << TIMx_EGR_TG_POS)
 
 //BG: Break generation
 //	This bit is set by software in order to generate an event, it is automatically cleared by hardware.
 //          	0: No action
 //		1: A break event is generated. MOE bit is cleared and BIF flag is set. Related interrupt or DMA transfer can occur if enabled.
-#define	TIMx_EGR_BG_POS			(7UL)
-#define	TIMx_EGR_BG_MASK		(1UL << TIMx_EGR_BG_POS)
+#define	TIMx_EGR_BG_POS			(7U)
+#define	TIMx_EGR_BG_MASK		(1U << TIMx_EGR_BG_POS)
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -624,8 +667,8 @@ typedef struct {
 //		11: CC1 channel is configured as input, IC1 is mapped on TRC. This mode is working only if an internal trigger input is selected through TS bit (TIMx_SMCR register)
 //Note:
 //	CC1S bits are writable only when the channel is OFF (CC1E = ‘0’ in TIMx_CCER).
-#define	TIMx_CCMRx_CC1S_POS		(0UL)
-#define	TIMx_CCMRx_CC1S_MASK		(3UL << TIMx_CCMRx_CC1S_POS)
+#define	TIMx_CCMRx_CC1S_POS		(0U)
+#define	TIMx_CCMRx_CC1S_MASK		(3U << TIMx_CCMRx_CC1S_POS)
 
 //CC2S[1:0]: Capture/Compare 2 selection
 //	This bit-field defines the direction of the channel (input/output) as well as the used input.
@@ -637,8 +680,8 @@ typedef struct {
 //			This mode is working only if an internal trigger input is selected through the TS bit (TIMx_SMCR register)
 //Note:
 //	CC2S bits are writable only when the channel is OFF (CC2E = ‘0’ in TIMx_CCER).
-#define	TIMx_CCMRx_CC2S_POS		(8UL)
-#define	TIMx_CCMRx_CC2S_MASK		(3UL << TIMx_CCMRx_CC2S_POS)
+#define	TIMx_CCMRx_CC2S_POS		(8U)
+#define	TIMx_CCMRx_CC2S_MASK		(3U << TIMx_CCMRx_CC2S_POS)
 
 //OC1FE: Output Compare 1 fast enable
 //	This bit is used to accelerate the effect of an event on the trigger in input on the CC output.
@@ -647,11 +690,11 @@ typedef struct {
 //          	1: An active edge on the trigger input acts like a compare match on CC1 output.
 //		   Then, OC is set to the compare level independently from the result of the comparison. Delay to sample the trigger input and to activate CC1 output is reduced to 3 clock cycles.
 //		   OCFE acts only if the channel is configured in PWM1 or PWM2 mode.
-#define	TIMx_CCMRx_OC1FE_POS		(2UL)
-#define	TIMx_CCMRx_OC1FE_MASK		(1UL << TIMx_CCMRx_OC1FE_POS)
+#define	TIMx_CCMRx_OC1FE_POS		(2U)
+#define	TIMx_CCMRx_OC1FE_MASK		(1U << TIMx_CCMRx_OC1FE_POS)
 
-#define	TIMx_CCMRx_OC2FE_POS		(10UL)
-#define	TIMx_CCMRx_OC2FE_MASK		(1UL << TIMx_CCMRx_OC2FE_POS)
+#define	TIMx_CCMRx_OC2FE_POS		(10U)
+#define	TIMx_CCMRx_OC2FE_MASK		(1U << TIMx_CCMRx_OC2FE_POS)
 
 //OC1PE: Output Compare 1 preload enable
 //	0: Preload register on TIMx_CCR1 disabled. TIMx_CCR1 can be written at anytime, the new value is taken in account immediately.
@@ -660,11 +703,11 @@ typedef struct {
 //Note:
 //	1: These bits can not be modified as long as LOCK level 3 has been programmed (LOCK bits in TIMx_BDTR register) and CC1S=’00’ (the channel is configured in output).
 //	2: The PWM mode can be used without validating the preload register only in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not guaranteed.
-#define	TIMx_CCMRx_OC1PE_POS		(3UL)
-#define	TIMx_CCMRx_OC1PE_MASK		(1UL << TIMx_CCMRx_OC1PE_POS)
+#define	TIMx_CCMRx_OC1PE_POS		(3U)
+#define	TIMx_CCMRx_OC1PE_MASK		(1U << TIMx_CCMRx_OC1PE_POS)
 
-#define	TIMx_CCMRx_OC2PE_POS		(11UL)
-#define	TIMx_CCMRx_OC2PE_MASK		(1UL << TIMx_CCMRx_OC2PE_POS)
+#define	TIMx_CCMRx_OC2PE_POS		(11U)
+#define	TIMx_CCMRx_OC2PE_MASK		(1U << TIMx_CCMRx_OC2PE_POS)
 
 //OC1M: Output Compare 1 mode
 //	These bits define the behavior of the output reference signal OC1REF from which OC1 and OC1N are derived. OC1REF is active high whereas OC1 and OC1N active level depends on CC1P and CC1NP bits.
@@ -694,27 +737,27 @@ typedef struct {
 //	2: In PWM mode 1 or 2, the OCREF level changes only when the result of the comparison changes or when the output compare mode switches from “frozen” mode to “PWM” mode.
 //	3: On channels having a complementary output, this bit field is preloaded.
 //		If the CCPC bit is set in the TIMx_CR2 register then the OC1M active bits take the new value from the preloaded bits only when a COM event is generated.
-#define	TIMx_CCMRx_OC1M_POS		(4UL)
-#define	TIMx_CCMRx_OC1M_MASK		(7UL << TIMx_CCMRx_OC1M_POS)
+#define	TIMx_CCMRx_OC1M_POS		(4U)
+#define	TIMx_CCMRx_OC1M_MASK		(7U << TIMx_CCMRx_OC1M_POS)
 
-#define	TIMx_CCMRx_OC2M_POS		(12UL)
-#define	TIMx_CCMRx_OC2M_MASK		(7UL << TIMx_CCMRx_OC2M_POS)
+#define	TIMx_CCMRx_OC2M_POS		(12U)
+#define	TIMx_CCMRx_OC2M_MASK		(7U << TIMx_CCMRx_OC2M_POS)
 
 //OC1CE: Output Compare 1 clear enable
 //	0: OC1Ref is not affected by the ETRF Input
 //	1: OC1Ref is cleared as soon as a High level is detected on ETRF input
-#define	TIMx_CCMRx_OC1CE_POS		(7UL)
-#define	TIMx_CCMRx_OC1CE_MASK		(1UL << TIMx_CCMRx_OC1CE_POS)
+#define	TIMx_CCMRx_OC1CE_POS		(7U)
+#define	TIMx_CCMRx_OC1CE_MASK		(1U << TIMx_CCMRx_OC1CE_POS)
 
-#define	TIMx_CCMRx_OC2CE_POS		(15UL)
-#define	TIMx_CCMRx_OC2CE_MASK		(1UL << TIMx_CCMRx_OC2CE_POS)
+#define	TIMx_CCMRx_OC2CE_POS		(15U)
+#define	TIMx_CCMRx_OC2CE_MASK		(1U << TIMx_CCMRx_OC2CE_POS)
 
 //TODO: Input Capture mode:
 
 #if 0
 
-//#define	TIMx_CCMR1__POS		(1UL)
-//#define	TIMx_CCMR1__MASK	(1UL << TIMx_CCMR1__POS)
+//#define	TIMx_CCMR1__POS		(1U)
+//#define	TIMx_CCMR1__MASK	(1U << TIMx_CCMR1__POS)
 
 #endif
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -736,11 +779,11 @@ typedef struct {
 //Note:
 //	On channels having a complementary output, this bit is preloaded.
 //	If the CCPC bit is set in the TIMx_CR2 register then the CC1E active bit takes the new value from the preloaded bit only when a Commutation event is generated.
-#define	TIMx_CCER_CC1E_POS		(0UL)
-#define	TIMx_CCER_CC1E_MASK		(1UL << TIMx_CCER_CC1E_POS)
+#define	TIMx_CCER_CC1E_POS		(0U)
+#define	TIMx_CCER_CC1E_MASK		(1U << TIMx_CCER_CC1E_POS)
 
-#define	TIMx_CCER_CCxE_POS(x)		((4*(x-1))UL)
-#define	TIMx_CCER_CCxE_MASK(x)		(1UL << TIMx_CCER_CCxE_POS(x))
+#define	TIMx_CCER_CCxE_POS(x)		((4*(x-1))U)
+#define	TIMx_CCER_CCxE_MASK(x)		(1U << TIMx_CCER_CCxE_POS(x))
 
 //CC1P: Capture/Compare 1 output polarity
 //
@@ -764,22 +807,22 @@ typedef struct {
 //	On channels having a complementary output, this bit is preloaded. If the CCPC bit is set in the TIMx_CR2 register then the CC1P active bit takes the new value from the preloaded bit only when a Commutation event is generated.
 //Note:
 //	This bit is not writable as soon as LOCK level 2 or 3 has been programmed (LOCK bits in TIMx_BDTR register).
-#define	TIMx_CCER_CC1P_POS		(1UL)
-#define	TIMx_CCER_CC1P_MASK		(1UL << TIMx_CCER_CC1P_POS)
+#define	TIMx_CCER_CC1P_POS		(1U)
+#define	TIMx_CCER_CC1P_MASK		(1U << TIMx_CCER_CC1P_POS)
 
-#define	TIMx_CCER_CCxP_POS(x)		(1+(4*(x-1))UL)
-#define	TIMx_CCER_CCxP_MASK(x)		(1UL << TIMx_CCER_CCxP_POS(x))
+#define	TIMx_CCER_CCxP_POS(x)		(1+(4*(x-1))U)
+#define	TIMx_CCER_CCxP_MASK(x)		(1U << TIMx_CCER_CCxP_POS(x))
 //CC1NE: Capture/Compare 1 complementary output enable
 //
 //	0: Off - OC1N is not active. OC1N level is then function of MOE, OSSI, OSSR, OIS1, OIS1N and CC1E bits.
 //	1: On - OC1N signal is output on the corresponding output pin depending on MOE, OSSI, OSSR, OIS1, OIS1N and CC1E bits.
 //Note:
 //	On channels having a complementary output, this bit is preloaded. If the CCPC bit is set in the TIMx_CR2 register then the CC1NE active bit takes the new value from the bit only when a Commutation event is generated.
-#define	TIMx_CCER_CC1NE_POS		(2UL)
-#define	TIMx_CCER_CC1NE_MASK		(1UL << TIMx_CCER_CC1NE_POS)
+#define	TIMx_CCER_CC1NE_POS		(2U)
+#define	TIMx_CCER_CC1NE_MASK		(1U << TIMx_CCER_CC1NE_POS)
 
-#define	TIMx_CCER_CCxNE_POS(x)		(2+(4*((x-1)%3))UL)
-#define	TIMx_CCER_CCxNE_MASK(x)		(1UL << TIMx_CCER_CCxNE_POS(x))
+#define	TIMx_CCER_CCxNE_POS(x)		(2+(4*((x-1)%3))U)
+#define	TIMx_CCER_CCxNE_MASK(x)		(1U << TIMx_CCER_CCxNE_POS(x))
 //CC1NP: Capture/Compare 1 complementary output polarity
 //	CC1 channel configured as output:
 //		0: OC1N active high.
@@ -791,18 +834,18 @@ typedef struct {
 //	On channels having a complementary output, this bit is preloaded. If the CCPC bit is set in the TIMx_CR2 register then the CC1NP active bit takes the new value from the preloaded bit only when a Commutation event is generated.
 //Note:
 //	This bit is not writable as soon as LOCK level 2 or 3 has been programmed (LOCK bits in TIMx_BDTR register) and CC1S=”00” (the channel is configured in output).
-#define	TIMx_CCER_CC1NP_POS		(3UL)
-#define	TIMx_CCER_CC1NP_MASK		(1UL << TIMx_CCER_CC1NP_POS)
+#define	TIMx_CCER_CC1NP_POS		(3U)
+#define	TIMx_CCER_CC1NP_MASK		(1U << TIMx_CCER_CC1NP_POS)
 
-#define	TIMx_CCER_CCxNP_POS(x)		(3+(4*((x-1)%3))UL)
-#define	TIMx_CCER_CCxNP_MASK(x)		(1UL << TIMx_CCER_CCxNP_POS(x))
+#define	TIMx_CCER_CCxNP_POS(x)		(3+(4*((x-1)%3))U)
+#define	TIMx_CCER_CCxNP_MASK(x)		(1U << TIMx_CCER_CCxNP_POS(x))
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 /*------------Counter Register------------*/
 
-#define	TIMx_CNT_POS		(0UL)
-#define	TIMx_CNT_MASK		(FFFFUL << TIMx_CNT_POS)
+#define	TIMx_CNT_POS		(0U)
+#define	TIMx_CNT_MASK		(0xFFFFU << TIMx_CNT_POS)
 
 /*++++++++++++++++++++++++++++++++++++++++*/
 
@@ -811,8 +854,8 @@ typedef struct {
 //The counter clock frequency (CK_CNT) is equal to fCK_PSC / (PSC[15:0] + 1).
 //PSC contains the value to be loaded in the active prescaler register at each update event
 //(including when the counter is cleared through UG bit of TIMx_EGR register or through trigger controller when configured in “reset mode”).
-#define	TIMx_PSC_POS		(0UL)
-#define	TIMx_PSC_MASK		(FFFFUL << TIMx_PSC_POS)
+#define	TIMx_PSC_POS		(0U)
+#define	TIMx_PSC_MASK		(0xFFFFU << TIMx_PSC_POS)
 
 /*++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -822,8 +865,8 @@ typedef struct {
 //ARR is the value to be loaded in the actual auto-reload register.
 //Refer to Time-base unit for more details about ARR update and behavior.
 //The counter is blocked while the auto-reload value is null.
-#define	TIMx_ARR_POS		(0UL)
-#define	TIMx_ARR_MASK		(FFFFUL << TIMx_ARR_POS)
+#define	TIMx_ARR_POS		(0U)
+#define	TIMx_ARR_MASK		(0xFFFFU << TIMx_ARR_POS)
 
 /*++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -837,8 +880,8 @@ typedef struct {
 //	It means in PWM mode (REP+1) corresponds to:
 //		– the number of PWM periods in edge-aligned mode
 //		– the number of half PWM period in center-aligned mode.
-#define	TIMx_RCR_REP_POS		(0UL)
-#define	TIMx_RCR_REP_MASK		(FFUL << TIMx_RCR_REP_POS)
+#define	TIMx_RCR_REP_POS		(0U)
+#define	TIMx_RCR_REP_MASK		(0xFFU << TIMx_RCR_REP_POS)
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -852,8 +895,8 @@ typedef struct {
 //
 //If channel CCx[i.e. 1, 2, 3, or 4] is configured as input:
 //	CCRx[i.e. 1, 2, 3, or 4] is the counter value transferred by the last input capture x[i.e. 1, 2, 3, or 4] event (ICx[i.e. 1, 2, 3, or 4]). The TIMx_CCRx[i.e. 1, 2, 3, or 4] register is read-only and cannot be programmed.
-#define	TIM1_CCRx_POS		(0UL)
-#define	TIM1_CCRx_MASK		(FFFFUL << TIM1_CCRx_POS)
+#define	TIM1_CCRx_POS		(0U)
+#define	TIM1_CCRx_MASK		(0xFFFFU << TIM1_CCRx_POS)
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -874,8 +917,8 @@ typedef struct {
 //
 //Note:
 //	This bit-field can not be modified as long as LOCK level 1, 2 or 3 has been programmed (LOCK bits in TIMx_BDTR register).
-#define	TIMx_BDTR_DTG_POS			(0UL)
-#define	TIMx_BDTR_DTG_MASK			(FFUL << TIMx_BDTR_DTG_POS)
+#define	TIMx_BDTR_DTG_POS			(0U)
+#define	TIMx_BDTR_DTG_MASK			(0xFFU << TIMx_BDTR_DTG_POS)
 
 //LOCK[1:0]: Lock configuration
 //	These bits offer a write protection against software errors.
@@ -888,8 +931,8 @@ typedef struct {
 //
 //Note:
 //	The LOCK bits can be written only once after the reset. Once the TIMx_BDTR register has been written, their content is frozen until the next reset.
-#define	TIMx_BDTR_LOCK_POS		(8UL)
-#define	TIMx_BDTR_LOCK_MASK		(3UL << TIMx_BDTR_LOCK_POS)
+#define	TIMx_BDTR_LOCK_POS		(8U)
+#define	TIMx_BDTR_LOCK_MASK		(3U << TIMx_BDTR_LOCK_POS)
 
 //OSSI: Off-state selection for Idle mode
 //	This bit is used when MOE=0 on channels configured as outputs.
@@ -899,8 +942,8 @@ typedef struct {
 //		1: When inactive, OC/OCN outputs are forced first with their idle level as soon as CCxE=1 or CCxNE=1. (OC/OCN enable output signal=1)
 //Note:
 //	This bit can not be modified as soon as the LOCK level 2 has been programmed (LOCK bits in TIMx_BDTR register).
-#define	TIMx_BDTR_OSSI_POS		(10UL)
-#define	TIMx_BDTR_OSSI_MASK		(1UL << TIMx_BDTR_OSSI_POS)
+#define	TIMx_BDTR_OSSI_POS		(10U)
+#define	TIMx_BDTR_OSSI_MASK		(1U << TIMx_BDTR_OSSI_POS)
 
 //OSSR: Off-state selection for Run mode
 //	This bit is used when MOE=1 on channels having a complementary output which are configured as outputs. OSSR is not implemented if no complementary output is implemented in the timer.
@@ -910,8 +953,8 @@ typedef struct {
 //		1: When inactive, OC/OCN outputs are enabled with their inactive level as soon as CCxE=1 or CCxNE=1. Then, OC/OCN enable output signal=1
 //Note:
 //	This bit can not be modified as soon as the LOCK level 2 has been programmed (LOCK bits in TIMx_BDTR register).
-#define	TIMx_BDTR_OSSR_POS		(11UL)
-#define	TIMx_BDTR_OSSR_MASK		(1UL << TIMx_BDTR_OSSR_POS)
+#define	TIMx_BDTR_OSSR_POS		(11U)
+#define	TIMx_BDTR_OSSR_MASK		(1U << TIMx_BDTR_OSSR_POS)
 
 //BKE: Break enable
 //	0: Break inputs (BRK and CSS clock failure event) disabled
@@ -920,8 +963,8 @@ typedef struct {
 //	This bit cannot be modified when LOCK level 1 has been programmed (LOCK bits in TIMx_BDTR register).
 //Note:
 //	Any write operation to this bit takes a delay of 1 APB clock cycle to become effective.
-#define	TIMx_BDTR_BKE_POS		(12UL)
-#define	TIMx_BDTR_BKE_MASK		(1UL << TIMx_BDTR_BKE_POS)
+#define	TIMx_BDTR_BKE_POS		(12U)
+#define	TIMx_BDTR_BKE_MASK		(1U << TIMx_BDTR_BKE_POS)
 
 //BKP: Break polarity
 //	0: Break input BRK is active low
@@ -930,16 +973,16 @@ typedef struct {
 //	This bit can not be modified as long as LOCK level 1 has been programmed (LOCK bits in TIMx_BDTR register).
 //Note:
 //	Any write operation to this bit takes a delay of 1 APB clock cycle to become effective. Bit 12
-#define	TIMx_BDTR_BKP_POS		(13UL)
-#define	TIMx_BDTR_BKP_MASK		(1UL << TIMx_BDTR_BKP_POS)
+#define	TIMx_BDTR_BKP_POS		(13U)
+#define	TIMx_BDTR_BKP_MASK		(1U << TIMx_BDTR_BKP_POS)
 
 //AOE: Automatic output enable
 //	0: MOE can be set only by software
 //	1: MOE can be set by software or automatically at the next update event (if the break input is not be active)
 //Note:
 //	This bit can not be modified as long as LOCK level 1 has been programmed (LOCK bits in TIMx_BDTR register).
-#define	TIMx_BDTR_AOE_POS		(14UL)
-#define	TIMx_BDTR_AOE_MASK		(1UL << TIMx_BDTR_AOE_POS)
+#define	TIMx_BDTR_AOE_POS		(14U)
+#define	TIMx_BDTR_AOE_MASK		(1U << TIMx_BDTR_AOE_POS)
 
 //MOE: Main output enable
 //	This bit is cleared asynchronously by hardware as soon as the break input is active. It is set by software or automatically depending on the AOE bit.
@@ -948,17 +991,17 @@ typedef struct {
 //		0: OC and OCN outputs are disabled or forced to idle state.
 //		1: OC and OCN outputs are enabled if their respective enable bits are set (CCxE, CCxNE in TIMx_CCER register).
 //		See OC/OCN enable description for more details (Section 12.4.9: TIM1 capture/compare enable register (TIMx_CCER)).
-#define	TIMx_BDTR_MOE_POS		(15UL)
-#define	TIMx_BDTR_MOE_MASK		(1UL << TIMx_BDTR_MOE_POS)
+#define	TIMx_BDTR_MOE_POS		(15U)
+#define	TIMx_BDTR_MOE_MASK		(1U << TIMx_BDTR_MOE_POS)
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 #if 0
-#define	TIMx_DCR__POS		(1UL)
-#define	TIMx_DCR__MASK		(1UL << TIMx_DCR__POS)
+#define	TIMx_DCR__POS		(1U)
+#define	TIMx_DCR__MASK		(1U << TIMx_DCR__POS)
 
-#define	TIMx_DMAR__POS		(1UL)
-#define	TIMx_DMAR__MASK		(1UL << TIMx_DMAR__POS)
+#define	TIMx_DMAR__POS		(1U)
+#define	TIMx_DMAR__MASK		(1U << TIMx_DMAR__POS)
 #endif
 
 #endif //TIMx_HEADER

@@ -1,21 +1,12 @@
 #include "MPU.h"
 #include "SCB.h"
-#include "NVIC.h"
 #include "Systick.h"
-#include "RCC.h"
+#include "TIMx.h"
 
-#define Enable_Priority_IRQs()		asm inline("CPSIE i\n\t")
-#define Disable_Priority_IRQs()		asm inline("CPSID i\n\t")
-
-#define Enable_NonMaskable_IRQs()	asm inline("CPSIE f\n\t")
-#define Disable_NonMaskable_IRQs()	asm inline("CPSID f\n\t")
-
-#define Enable_MPU()	MPU->CTRL |= MPU_CTRL_ENABLE_MASK
-#define Disable_MPU()	MPU->CTRL &= ~MPU_CTRL_ENABLE_MASK
+#include "API.h"
 
 extern uint32_t __stack_top__;
 extern uint32_t __stack_size__;
-
 
 extern uint32_t __etext__;
 extern uint32_t __sdata__;	// load address = __etext__ but virtual access address is beginning of RAM (check .map and .list file for confirmation)
@@ -26,20 +17,22 @@ extern uint32_t __ebss__;
 
 extern void main(void);
 
-extern void __set_system_freq(uint32_t frq);
-extern void __maxout_system_domains(void);
-
 __attribute__((interrupt, naked, noreturn)) void RESET(void)
 {
 	//Disable all interrupts
-	Disable_Priority_IRQs();
-	Disable_NonMaskable_IRQs();
+	Disable_System_Interrupts();
+	Disable_External_Interrupts();
 
-	Disable_MPU();
-	//FPU Disabled from reset
+	DISABLE_MPU();
+
+	//FPU Disabled after reset
+	//Disable_FPUT();
 	
+	FLASH_Init();
+
 	//Use PLL as SYSCLK
-	__set_system_freq(84000000UL);
+	__set_system_freq(84*MHz);
+
 	//Minimum prescaling values for all buses
 	//84MHz AHB domain
 	//42MHz Low speed APB1
@@ -47,7 +40,9 @@ __attribute__((interrupt, naked, noreturn)) void RESET(void)
 	__maxout_system_domains();
 
 	//Enable A, B, and C GPIO ports clock
-	RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOAEN_MASK | RCC_AHB1ENR_GPIOBEN_MASK | RCC_AHB1ENR_GPIOCEN_MASK);
+	ENABLE_AHB_PORT_A();
+	ENABLE_AHB_PORT_B();
+	ENABLE_AHB_PORT_C();
 
 	//Copy the data at the end of text section to RAM where it should be accessed
 	for(uint32_t *t_pos = &__etext__, *d_pos = &__sdata__; d_pos < &__edata__; d_pos++, t_pos++)
@@ -63,8 +58,9 @@ __attribute__((interrupt, naked, noreturn)) void RESET(void)
 
 	//Do a lot of stuff here
 	
-	Enable_NonMaskable_IRQs();
-	Enable_Priority_IRQs();
+	Enable_System_Interrutps();
+	Enable_External_Interrupts();
 
 	main();
+
 }

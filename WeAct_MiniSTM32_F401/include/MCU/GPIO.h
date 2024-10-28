@@ -133,9 +133,9 @@ typedef struct {
 //	0110: AF6               1110: AF14
 //	0111: AF7               1111: AF15
 #define GPIO_AFRL_POS(x)		(4UL*x%7UL))
-#define GPIO_AFRL_MASK(x)		(1UL << GPIO_AFRL_POS(x))
+#define GPIO_AFRL_MASK(x)		(0xFUL << GPIO_AFRL_POS(x))
 
 //Alternate function selection for port x bit y (y = 8..15)
-#define GPIO_AFRH_POS(x)		(4UL* (((x%8UL)%15UL) )
-#define GPIO_AFRH_MASK(x)		(1UL << GPIO_AFRH_POS(x))
+#define GPIO_AFRH_POS(x)		(4UL* ((x%8UL)%15UL) )
+#define GPIO_AFRH_MASK(x)		(0xFUL << GPIO_AFRH_POS(x))
 

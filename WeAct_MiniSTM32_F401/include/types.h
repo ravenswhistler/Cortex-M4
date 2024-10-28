@@ -20,4 +20,9 @@
 #define		TRUE		1UL
 #define		true		TRUE
 
+#define		MHz		1000000UL
+#define		KHz		1000UL
+
+#define NOP()		asm inline("nop\n\t")
+
 #endif //_TYPES_
