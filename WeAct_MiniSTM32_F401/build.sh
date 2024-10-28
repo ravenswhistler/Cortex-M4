@@ -12,8 +12,7 @@ hd=hexdump
 SRC="./src/"
 BLD="./build"
 INC="-iquote ./include/ -iquote ./include/Core/ -iquote ./include/MCU/"
-#-mgeneral-regs-only 
-G_FLAGS="-Wall -Wextra -O0 -std=gnu11 -nostdlib -ffreestanding -nostartfiles"
+G_FLAGS="-Wall -Wextra -O0 -std=gnu11 -nostdlib -ffreestanding -nostartfiles -mgeneral-regs-only"
 COREFLAGS="-mthumb -mabi=aapcs -mapcs-frame -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mlittle-endian -march=armv7e-m+nofp -mno-sched-prolog -mtune=cortex-m4 -mgeneral-regs-only"
 CPP_FLAGS="-fno-exceptions -fno-unwind-tables -no-rtti"
 LDFLAGS="-gc-sections -print-memory-usage -static -Map=./build/mapper.map"

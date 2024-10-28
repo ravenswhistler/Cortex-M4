@@ -5,7 +5,7 @@
 #define PSCVAL	84		//TIM1 CNT runs at 1MHz
 #define ARRVAL	500		//OCxREF toggled every 1mSec (1KHz) {PWMperiod = 2*ARR -> if ARR/2 == 500 then the PWMperiod is 1mSEC when PSC(clk) == 1MHz}
 #define PERIOD	ARRVAL		
-#define RES	500		//Usually i would choose something like 1% or 0.1% to modify the duty cycle but since ARR is relatively small a +/- 5 would resualt in faster rate of change and make the LED behave quicker than it's comfortable to the observer
+#define RES	500		//Usually i would choose something like 1% or 0.1% to modify the duty cycle but since ARR is relatively small a +/- 5 would result in faster rate of change and make the LED behave quicker than what's comfortable to the observer's eyes
 #define STEP (PERIOD/RES)	//A STEP represents the Unit fraction of (increase/decrease) that corresponds to representable integer value. usually equals 1.
 				//The smaller the period and the bigger the ARR value, the finer the tuning of the respective signal's duty cycle.
 				//Thi this example i chose to preload once every compare match and update once every overflow) which makes the led shine at max and dim out in a time period equals to [1000*(2*ARR/CLK(psc)) = 1] sec
@@ -26,7 +26,7 @@ void wait(uint32_t t)
 void TIM1_Compare_Callback(void)
 {
 	static volatile uint32_t DIR = 1;
-	static volatile uint32_t ticks = 0;
+	//static volatile uint32_t ticks = 0;
 
 	if(TIM1->CCR1 == RES*STEP) { DIR = 0; }
 	if(TIM1->CCR1 == 0)	   { DIR = 1; }
