@@ -229,10 +229,13 @@ void main()
 	while(1)
 	{
 		TOGGLE_PORT_C_PINx_O_DATA(13);
-		//The timer is running at 1MHz, meanwhile Systick runs at 84MHz, the timer ticks every 1 milli-second while systick ticks every 1 microsecond
+		//The timer is running at 1MHz, meanwhile Systick runs at 84MHz, the timer ticks every 1 milli-second while systick ticks once every 0.0119 micro-second or 11.9 nano-second
 		//It takes 1000 ticks for timer 1 to span 1 second
-		//It takes 84000 ticks for systick 1 to span 1 second
-		//The reload value for both equal the total amount of ticks it takes to span 1 second (with that amount halvedin Center-aligned mode for TIM1)
+		//It takes 100,000,000 ticks for systick 1 to span 1.19 second
+		//The reload register is 24-byte register, the max vakue it can hold is 1,677,215 
+		//Pick 84,000 as the systick reload value now the systick reload cycle is 1.0 milli-second
+		//Now wait 1000 cycle to pass for an event to happen every 1.0 second
+		//The reload value for both equal the total amount of ticks that it takes 1000 cycle for both timers to span 1 second (with that amount halved in Center-aligned mode for TIM1)
 		//TO prove the calculations correct, use 1 second worth of ARR as Systick delay
 		wait(2*ARRVAL);
 	}
