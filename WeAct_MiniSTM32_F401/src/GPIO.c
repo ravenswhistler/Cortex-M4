@@ -1,0 +1,41 @@
+#include "API.h"
+
+#define SET_PORT_z_PINx_MODE(z,x,y)		(z->MODER &= ~GPIO_MODER_MASK(x)); (z->MODER |= (y << GPIO_MODER_POS(x)))
+
+#define SET_PORT_z_PINx_OUTPUT_TYPE(z,x,y)	(z->OTYPER &= ~GPIO_OTYPER_MASK(x)); (z->OTYPER |= (y << GPIO_OTYPER_POS(x)))
+
+#define SET_PORT_z_PINx_O_SPEED(z,x,y)		(z->OSPEEDR &= ~GPIO_OSPEEDR_MASK(x)); (z->OSPEEDR |= (y << GPIO_OSPEEDR_POS(x)))
+
+#define SET_PORT_z_PINx_PUSH_PULL(z,x,y)	(z->PUPDR &= ~GPIO_PUPDR_MASK(x)); (z->PUPDR |= (y << GPIO_PUPDR_POS(x)))
+
+#define ENABLE_PORT_z_PINx_O_DATA(z,x)		((z->OTYPER & (uint16_t)GPIO_OTYPER_MASK(x)) == (uint16_t)(GPIO_PORT_OPEN_DRAIN_TYPE << GPIO_OTYPER_POS(x))) ? (z->ODR &= ~GPIO_ODR_MASK(x)) : (z->ODR |= GPIO_ODR_MASK(x))
+
+#define DISABLE_PORT_z_PINx_O_DATA(z,x)		((z->OTYPER & (uint16_t)GPIO_OTYPER_MASK(x)) == (uint16_t)(GPIO_PORT_OPEN_DRAIN_TYPE << GPIO_OTYPER_POS(x))) ? (z->ODR |= GPIO_ODR_MASK(x)) : (z->ODR &= ~GPIO_ODR_MASK(x))
+
+#define TOGGLE_PORT_z_PINx_O_DATA(z,x)		(z->ODR ^= GPIO_ODR_MASK(x))
+
+
+void LED_Config(GPIO_Type *GPIO, GPIO_PORT_PIN pin, uint32_t ENABLE)
+{
+	SET_PORT_z_PINx_MODE(GPIO, pin, GPIO_PIN_OUTPUT_MODE);
+	SET_PORT_z_PINx_OUTPUT_TYPE(GPIO, pin, GPIO_PORT_OPEN_DRAIN_TYPE);
+	SET_PORT_z_PINx_O_SPEED(GPIO, pin, GPIO_PORT_LOW_SPEED);
+	SET_PORT_z_PINx_PUSH_PULL(GPIO, pin, GPIO_IO_NO_PULL_UP_OR_DOWN);
+	(ENABLE > 0) ? ENABLE_PORT_z_PINx_O_DATA(GPIO, pin) : DISABLE_PORT_z_PINx_O_DATA(GPIO, pin);
+}
+
+
+void DIM_LED(GPIO_Type *GPIO, GPIO_PORT_PIN pin)
+{
+	DISABLE_PORT_z_PINx_O_DATA(GPIO, pin);
+}
+
+void SHINE_LED(GPIO_Type *GPIO, GPIO_PORT_PIN pin)
+{
+	ENABLE_PORT_z_PINx_O_DATA(GPIO, pin);
+}
+
+void TOGGLE_LED(GPIO_Type *GPIO, GPIO_PORT_PIN pin)
+{
+	TOGGLE_PORT_z_PINx_O_DATA(GPIO, pin);
+}

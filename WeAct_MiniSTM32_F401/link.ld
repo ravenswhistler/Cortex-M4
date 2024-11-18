@@ -37,6 +37,7 @@ SECTIONS {
 	{
 	    __sbss__ = .;		/*You gussed right!*/
 	    KEEP(*(.bss))
+	    KEEP(*(.COMMON))
 		. = ALIGN(4);
 	    __ebss__ = .;
 	} > RAM

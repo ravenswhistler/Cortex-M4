@@ -19,8 +19,15 @@ __attribute__((naked)) void Disable_External_Interrupts(void)	{ asm inline("CPSI
 //TODO: static inline void Enable_System_IRQ(IRQN_Type irq);
 //TODO: static inline void Disable_System_IRQ(IRQN_Type irq);
 
-void Set_Priority(IRQN_Type irq, uint32_t p);
-void Get_Priority(IRQN_Type irq);
+void Set_IRQn_Priority(IRQN_Type irq, uint32_t p)
+{
+	NVIC->IPR[(irq)] |= (p & 0xFUL) << 4U;
+}
+
+uint32_t Get_IRQn_Priority(IRQN_Type irq)
+{
+	return (uint32_t)((NVIC->IPR[(irq)]) >> 4U);
+}
 
 
 /*
@@ -33,17 +40,17 @@ void Enable_IRQ(IRQN_Type irq)
 	NVIC->ISER[WORD_OFFSET(irq)] |= BIT_MASK(irq);
 }
 
-inline uint32_t Is_IRQ_Enabled(IRQN_Type irq)
+uint32_t Is_IRQ_Enabled(IRQN_Type irq)
 {
 	return ((NVIC->ISER[WORD_OFFSET(irq)] & BIT_MASK(irq)) == IS_BIT_SET(irq)) ? true : (false);
 }
 
-inline void Disable_IRQ(IRQN_Type irq)
+void Disable_IRQ(IRQN_Type irq)
 {
 	NVIC->ICER[WORD_OFFSET(irq)] |= BIT_MASK(irq);
 }
 
-inline uint32_t Is_IRQ_Disabled(IRQN_Type irq)
+uint32_t Is_IRQ_Disabled(IRQN_Type irq)
 {
 	return ((NVIC->ICER[WORD_OFFSET(irq)] & BIT_MASK(irq)) == IS_BIT_SET(irq)) ? true : (false);
 }

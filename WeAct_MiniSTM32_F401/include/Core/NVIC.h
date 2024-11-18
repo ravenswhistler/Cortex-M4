@@ -38,6 +38,7 @@ typedef enum {
 	DMA1_STREAM5_IRQn      		= 16,         /* 0x0080 */
 	DMA1_STREAM6_IRQn      		= 17,         /* 0x0084 */
 	ADC_IRQn               		= 18,         /* 0x0088 */
+
 	EXTI9_5_IRQn           		= 23,         /* 0x009C */
 	TIM1_BRK_TIM9_IRQn     		= 24,         /* 0x00A0 */
 	TIM1_UP_TIM10_IRQn     		= 25,         /* 0x00A4 */
@@ -54,6 +55,7 @@ typedef enum {
 	SPI2_IRQn              		= 36,         /* 0x00D0 */
 	USART1_IRQn            		= 37,         /* 0x00D4 */
 	USART2_IRQn            		= 38,         /* 0x00D8 */
+
 	EXTI15_10_IRQn         		= 40,         /* 0x00E0 */
 	EXTI17_RTC_ALARM_IRQn  		= 41,         /* 0x00E4 */
 	EXTI18_OTG_FS_WKUP_IRQn		= 42,         /* 0x00E8 */
@@ -61,6 +63,7 @@ typedef enum {
 	SDIO_IRQn              		= 49,         /* 0x0104 */
 	TIM5_IRQn              		= 50,         /* 0x0108 */
 	SPI3_IRQn              		= 51,         /* 0x012C */
+
 	DMA2_STREAM0_IRQn      		= 56,         /* 0x0120 */
 	DMA2_STREAM1_IRQn      		= 57,         /* 0x0124 */
 	DMA2_STREAM2_IRQn      		= 58,         /* 0x0128 */
@@ -128,7 +131,7 @@ typedef struct {
 
 		_I uint32_t UNUSED_4[56U];
         
-	_IO uint32_t IPR[60U];			
+	_IO uint8_t IPR[240U];			
 
 		_I uint32_t UNUSED_5[644U];
 

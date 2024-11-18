@@ -1,4 +1,4 @@
-#ifdef SCB_HEADER
+#ifndef SCB_HEADER
 #define SCB_HEADER
 
 #include "types.h"
@@ -53,54 +53,37 @@ typedef struct {
 
 
 #define 	SCB_BASE	(0xE000ED00U)
-#define		SCB		((SCB_Type*)SCB_BASE)
+#define SCB ((SCB_Type*)SCB_BASE)
 
 typedef struct {
 
 	_I uint32_t CPUID;
 	_IO uint32_t ICSR;		//Interrupt control and state register
 	_IO uint32_t VTOR;		//Vector table offset register
-	_IO uint32_t AIRCR;	//Application interrupt and reset control register
+	_IO uint32_t AIRCR;		//Application interrupt and reset control register
 	_IO uint32_t SCR;		//System control register
 	_IO uint32_t CCR;		//Configuration and control register
 				
-				//System handler priority registers
-	_IO uint8_t SHPR1[8U];	//[1] PRI_4: Priority of system handler 4, memory management fault
-				//[3] PRI_5: Priority of system handler 5, bus fault
-				//[5] PRI_6: Priority of system handler 6, usage fault
-				
-	_IO uint8_t SHPR2[8U];	//[7] PRI_11: Priority of system handler 11, SVCall
+					//System handler priority registers
+	_IO uint32_t SHPR1;		//PRI_4: Priority of system handler 4, memory management fault
+		       			//PRI_5: Priority of system handler 5, bus fault
+		       			//PRI_6: Priority of system handler 6, usage fault
+		       	
+	_IO uint32_t SHPR2;		//PRI_11: Priority of system handler 11, SVCall
 
-	_IO uint8_t SHPR3[8U];	//[5] PRI_14: Priority of system handler 14, PendSV
-				//[7] PRI_15: Priority of system handler 15, SysTick exception
+	_IO uint32_t SHPR3;		//PRI_14: Priority of system handler 14, PendSV
+					//PRI_15: Priority of system handler 15, SysTick exception
 
-	_IO uint32_t SHCSR;	//System handler control and state register
+	_IO uint32_t SHCSR;		//System handler control and state register
 	_IO uint32_t CFSR;		//Configurable fault status register (UFSR+BFSR+MMFSR)
 	_IO uint32_t HFSR;		//Hard fault status register
 	_IO uint32_t DFSR;		//TODO
-	_IO uint32_t MMFAR;	//Memory management fault address register
+	_IO uint32_t MMFAR;		//Memory management fault address register
 	_IO uint32_t BFAR;		//Bus fault address register
 	_IO uint32_t AFSR;		//Auxiliary fault status register
 
-	//CPUID registers
-	_I uint32_t PFR[2U];	//Processor Feature ID Registers
-	_I uint32_t DFR;      	//Debug Feature ID register. Part of the Debug system registers.
-	_I uint32_t AfR;      	//Auxiliary Feature ID register
-	_I uint32_t MMFR[4U]; 	//Memory Model Feature Registers
-	_I uint32_t ISAR[5U]; 	//Instruction Set Attribute Registers
+} SCB_Type;
 
-		uint32_t __UNUSED_0;
-
-	//Cache Control Identification Registers
-	_I uint32_t CLIDR;		//Cache Level ID Register
-	_I uint32_t CCSIDR;	//Cache Size ID Registers
-	_IO uint32_t CSSELR;	//Cache Size Selection Register
-	_I uint32_t CTR;		//Cache Type Register
-
-	
-	_IO uint32_t CPACR;	//Coprocessor access control register. Part of the FPU
-
-} SCB_Type ;
 
 
 /*---------CPUID's MASKs----------*/

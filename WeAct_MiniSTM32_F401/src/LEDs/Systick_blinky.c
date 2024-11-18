@@ -8,11 +8,11 @@ void Systick_Callback(void) {
 	return;
 }
 
-__attribute__((interrupt)) void Systick(void)
-{
-	Systick_Callback();
-	return;
-}
+//__attribute__((interrupt)) void Systick(void)
+//{
+//	Systick_Callback();
+//	return;
+//}
 
 
 void Delay(uint32_t D)
@@ -35,7 +35,7 @@ void main()
 
 	CLEAR_PORT_C_MODER();
 
-	SET_PORT_C_PINx_MODE(13, OUTPUT_MODE);
+	SET_PORT_C_PINx_MODE(13, 1);
 
 	SET_PORT_C_PINx_OUTPUT_TYPE(13, OPEN_DRAIN_OTYPE);
 
